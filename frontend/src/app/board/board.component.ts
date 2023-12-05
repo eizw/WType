@@ -5,30 +5,31 @@ import { WordComponent } from '../word/word.component';
   selector: 'app-board',
   standalone: true,
   imports: [],
-  template: `
-    <p>
-      board works!
-    </p>
-  `,
+  templateUrl: `./board.component.html`,
   styleUrl: './board.component.css'
 })
 export class BoardComponent implements OnInit {
   words!: WordComponent[]; // size; 10x3
+  word_queue!: string[];
+  word_list!: string[];
 
   constructor() {}
 
   ngOnInit(): void {
-    let word_queue: string[] = this.genWords()
-    this.newRun()
+    this.genWords()
+    // this.newRun()
   }
 
   newRun(): void {
-    let word_queue: string[] = this.genWords()
 
   }
 
-  genWords(): string[] {
-    return []
+  genWords(): void {
+    fetch('words.txt')
+      .then((res) => res.text())
+      .then((text) => {
+        this.word_list = text.split('\n')
+      })
   }
   
 }
