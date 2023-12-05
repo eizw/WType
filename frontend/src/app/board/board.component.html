@@ -1,0 +1,12 @@
+
+
+<div class="container">
+    <h1>Board working!</h1>
+    <div class="word-container">
+        <app-word
+            *ngFor="let val of word_queue"
+            [value]="val"
+        >
+        </app-word>
+    </div>
+</div>

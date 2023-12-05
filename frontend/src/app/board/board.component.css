@@ -1,0 +1,10 @@
+.container {
+    align-items: center;
+}
+
+.word-container {
+    display: block;
+    width: 50rem;
+    align-items: center;
+    overflow: hidden;
+}
