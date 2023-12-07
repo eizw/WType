@@ -6,9 +6,9 @@ import { Component, Input } from '@angular/core';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [],
   template: `
-    <p>
+    <span>
       {{ value }}
-    </p>
+    </span>
   `,
   styleUrl: './word.component.css'
 })
