@@ -15,6 +15,26 @@
     overflow: hidden;
 }
 
+.player-text {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 117px;
+    width: 70vw;
+    opacity: 0;
+}
+
+.player-text {
+
+}
+
+
+
+h1 {
+    color: rgb(112, 48, 171);
+}
+
 app-word {
+    display: inline;
     margin: 15px;
 }

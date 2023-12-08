@@ -1,13 +1,17 @@
+import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NgIterable } from '@angular/core';
 import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-word',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [],
+  imports: [CommonModule],
   template: `
-    <span>
-      {{ value }}
+    <span
+      *ngFor="let letter of value.split('')"
+      class="letter"
+    >
+      {{ letter }}
     </span>
   `,
   styleUrl: './word.component.css'

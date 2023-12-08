@@ -1,8 +1,11 @@
 
 
 <div class="container">
-    <h1>Board working!</h1>
     <div class="word-container">
+        <input type="text" class="player-text">
+        <!-- <div class="player-cursor">
+            |
+        </div> -->
         <app-word
             *ngFor="let val of word_queue"
             [value]="val"
