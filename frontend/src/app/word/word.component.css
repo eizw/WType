@@ -1,4 +1,10 @@
+.letter-wrong {
+    color: red;
+}
 
+.letter-right {
+    color: gray;
+}
 
 span {
     text-align: center;

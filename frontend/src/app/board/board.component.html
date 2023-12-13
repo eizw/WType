@@ -2,7 +2,10 @@
 
 <div class="container">
     <div class="word-container">
-        <input type="text" class="player-text">
+        <input type="text" class="player-text" 
+            (keyup)="onKeyUp($event)"
+            (click)="this.IN_GAME = true"
+        >
         <!-- <div class="player-cursor">
             |
         </div> -->
@@ -12,4 +15,5 @@
         >
         </app-word>
     </div>
+    <button class="reset-btn" (click)="newRun()">RESET</button>
 </div>
