@@ -1,5 +1,5 @@
 <body>
-    <app-board></app-board>
+    <app-board *ngIf="!isLoading" [word_list]="words"></app-board>
 </body>
 <router-outlet>
   

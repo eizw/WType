@@ -1,4 +1,4 @@
-import { Component, NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit, NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { WordComponent } from './word/word.component';
@@ -15,6 +15,18 @@ import { BoardComponent } from './board/board.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'frontend';
+  private word_url: string = 'http://localhost:8000/words'
+  public words!: string[];
+  public isLoading:boolean = true;
+
+  ngOnInit(): void {
+    fetch(this.word_url)
+      .then((res) => res.json())
+      .then((word_data) => {
+        this.words = word_data
+        this.isLoading = false;
+      })
+  }
 }
