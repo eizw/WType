@@ -1,4 +1,7 @@
 frontend/node_modules/
 venv
+lib
+lib64
+share
 
 pyvenv.cfg
