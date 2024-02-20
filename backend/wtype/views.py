@@ -3,8 +3,13 @@ from wtype.models import Word
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from wtype.serializers import UserSerializer, GroupSerializer, WordSerializer
+from os import path
 
+basepath = path.dirname(__file__)
+filepath = path.abspath(path.join(basepath, "..", "words.txt"))
 # Create your views here.
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -19,12 +24,13 @@ class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 # GET WORDS
+@api_view(['GET'])
 def getWord(request):
     # app = Word.objects.all()
     # serializer = WordSerializer(app, many=True)
     # return Response(serializer.data)
     words = []
-    with open('../words.txt', 'r') as wordfile:
-        lines = wordfile.readlines()
-        words = lines.splitlines()
-    return Response(words)
+    with open(filepath, 'r') as wordfile:
+        words = wordfile.read().split('\n')
+        return Response(words)
+    #data = {'words': words}
