@@ -10,9 +10,7 @@ import { Component, Input } from '@angular/core';
     <span
       *ngFor="let letter of value.split('')"
       class="letter"
-    >
-      {{ letter }}
-    </span>
+    >{{letter}}</span>
   `,
   styleUrl: './word.component.css'
 })

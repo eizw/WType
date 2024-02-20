@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { WordComponent } from '../word/word.component';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import internal from 'stream';
 @Component({
   selector: 'app-board',
   standalone: true,
@@ -14,7 +15,7 @@ import { CommonModule } from '@angular/common';
 })
 export class BoardComponent implements OnInit {
   letters!: NodeListOf<Element>; // size; 10x3
-  cursor: any = '';
+  cursor: any;
   cursor_pos: number = 0;
   word_queue: string[] = [];
   @Input() word_list!: string[];
@@ -28,6 +29,7 @@ export class BoardComponent implements OnInit {
   async ngOnInit() {
     this.word_queue = await this.genWords()
     this.letters = document.querySelectorAll('app-word span')
+    this.newRun()
     // for (let i = 0; i < this.word_queue[0].length; i++) {
     //   console.log(this.word_queue[0][i])
     // }
@@ -36,17 +38,28 @@ export class BoardComponent implements OnInit {
 
   onKeyUp(x: any): void {
     if (this.IN_GAME) {
-      console.log(x.target.value, this.cursor)
-      if (x.target.value == this.cursor) {
+      let curr: string = x.target.value[x.target.value.length - 1]
+      console.log(curr + "|" + this.cursor)
+      if (curr.localeCompare(this.cursor) == 0) {
         this.letters[this.cursor_pos].classList.add('letter-right')
         
       } else {
-        this.letters[this.cursor_pos].classList.add('letter-wrong')
+        if (curr === 'Backspace') {
+          this.letters[this.cursor_pos].classList.remove('letter-right')
+          this.letters[this.cursor_pos].classList.remove('letter-wrong')
+          this.cursor_pos--;
+          this.refreshCursor();
+        } else {
+          this.letters[this.cursor_pos].classList.add('letter-wrong')
+        }
       }
-      this.cursor_pos += 1
-      this.cursor = this.letters[this.cursor_pos].textContent
+      this.cursor_pos++
+      this.refreshCursor()
     }
-    
+  }
+
+  private refreshCursor(): void {
+    this.cursor = this.letters[this.cursor_pos].textContent
   }
 
   async newRun() {
