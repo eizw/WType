@@ -1,6 +1,7 @@
-<body>
+<div class="main-container">
+    <app-header></app-header>
     <app-board *ngIf="!isLoading" [word_list]="words"></app-board>
-</body>
+</div>
 <router-outlet>
   
 </router-outlet>

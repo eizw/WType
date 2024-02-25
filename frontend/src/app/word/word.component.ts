@@ -7,10 +7,10 @@ import { Component, Input } from '@angular/core';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule],
   template: `
-    <span
+    <div class="word"><span
       *ngFor="let letter of value.split('')"
       class="letter"
-    >{{letter}}</span>
+    >{{letter}}</span></div>
   `,
   styleUrl: './word.component.css'
 })

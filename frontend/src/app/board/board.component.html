@@ -9,11 +9,14 @@
         <!-- <div class="player-cursor">
             |
         </div> -->
-        <app-word
+        <div class="word-wrapper">
+            <app-word
             *ngFor="let val of word_queue"
             [value]="val"
-        >
-        </app-word>
+            >
+            </app-word>
+        </div>
+        
     </div>
     <button class="reset-btn" (click)="newRun()">RESET</button>
 </div>

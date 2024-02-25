@@ -1,0 +1,14 @@
+.main-container {
+    min-height: 100vh;
+    align-items: center;
+    vertical-align: middle;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    padding-left: 15%;
+    padding-right: 15%;
+}
+
+app-board {
+    width: 100%;
+}

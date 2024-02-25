@@ -64,25 +64,26 @@ export class BoardComponent implements OnInit {
           this.refreshCursor();
         }
       } else if (curr) {
-        // // LETTERS
-        // let currKey: number = x.keyCode + 32
-        // console.log(currKey + "|" + this.cursor)
-        // if (currKey == this.cursor.charCodeAt(0)) {
-        //   this.letters[this.cursor_pos].classList.add('letter-right')
-        // } else {
-        //   this.letters[this.cursor_pos].classList.add('letter-wrong')
-        // }
-        // this.cursor_pos++
-        // this.refreshCursor()
-        this.cursor_pos++;
-        for (let i = 0; i < curr.length; i++) {
-          let temp: number = this.cursor_floor + i;
-          if (this.letters[temp].textContent == curr[i]) {
-            this.letters[temp].classList.add('letter-right')
-          } else {
-            this.letters[temp].classList.add('letter-wrong')
-          }
+        // LETTERS
+        let currKey: number = x.keyCode + 32
+        console.log(currKey + "|" + this.cursor)
+        if (currKey == this.cursor.charCodeAt(0)) {
+          this.letters[this.cursor_pos].classList.add('letter-right')
+        } else {
+          this.letters[this.cursor_pos].classList.add('letter-wrong')
         }
+        this.cursor_pos++
+        this.refreshCursor()
+
+        // this.cursor_pos++;
+        // for (let i = 0; i < curr.length; i++) {
+        //   let temp: number = this.cursor_floor + i;
+        //   if (this.letters[temp].textContent == curr[i]) {
+        //     this.letters[temp].classList.add('letter-right')
+        //   } else {
+        //     this.letters[temp].classList.add('letter-wrong')
+        //   }
+        // }
       }
     }
   }
