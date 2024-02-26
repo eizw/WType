@@ -1,7 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 
+:root {
+    --bg-color: #474747;
+    --main-color: #8b64b9;
+    --word-wrong: #b381e3;
+}
+
 html, body {
-    background-color: rgb(46, 46, 46);
+    /* background-color: rgb(46, 46, 46); */
+    background-color: var(--bg-color);
     min-height: 100vh;
     min-width: 100vw;
 }

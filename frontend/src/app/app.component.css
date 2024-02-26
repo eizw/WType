@@ -3,12 +3,23 @@
     align-items: center;
     vertical-align: middle;
     justify-content: center;
-    display: flex;
-    flex-direction: column;
-    padding-left: 15%;
-    padding-right: 15%;
+    /* display: flex;
+    flex-direction: column; */
+    display: grid;
+    /* grid-template-areas: 
+        "header"
+        "board"
+        "footer"; */
+    grid-template-rows: auto 80% auto;
+    gap: 10px;
+    margin-left: 15%;
+    margin-right: 15%;
 }
 
 app-board {
+    width: 100%;
+}
+
+app-header {
     width: 100%;
 }

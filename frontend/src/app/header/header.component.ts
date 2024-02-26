@@ -8,5 +8,4 @@ import { Component } from '@angular/core';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  constructor() {}
 }

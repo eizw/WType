@@ -1,9 +1,9 @@
 .letter-wrong {
-    color: red;
+    color: var(--word-wrong);
 }
 
 .letter-right {
-    color: greenyellow;
+    color: darkgray;
 }
 
 span {
