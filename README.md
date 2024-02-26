@@ -1,9 +1,10 @@
 # WType
 
 ## Typing speed ego simulator
-Basic typing speed test website (i.e. monkeytype, typetest).
-Started as an excuse to learn django and Angular (initially Next.js but Reactive is 🤮)
+Basic typing speed test website.  
 
 ## Framework
-Django backend
-Angular frontend
+Django backend  
+Angular frontend  
+Backend acts as an API for generating words to use on the game.  
+Frontend displays the words to be used and calculates the WPM and other relevant stats.
