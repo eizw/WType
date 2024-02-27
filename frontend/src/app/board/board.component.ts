@@ -14,12 +14,15 @@ import internal from 'stream';
   styleUrl: './board.component.css'
 })
 export class BoardComponent implements OnInit {
-  letters!: NodeListOf<Element>; // size; 10x3
+  letterSpan!: NodeListOf<Element>; // size; 10x3
   cursor: any; // current letter
   curr_word: number = 0; // current word index
   cursor_pos: number = 0; // current letter index
   cursor_floor: number = 0; // lowest value for cursor_pos
+
+  raw: string = '';
   word_queue: string[] = [];
+  letters: string[] = [];
   @Input() word_list!: string[];
   //word_list: string[] = [    "cry",    "wicked",    "icy",    "ajar",    "ghost",    "unable",    "girls",    "expect",    "gather",    "narrow",    "mate",    "agonizing",    "somber",    "flowery",    "shiny",    "bike",    "shelter",    "straight",    "royal",    "nauseating",    "pipe",    "entertain",    "keen",    "thinkable",    "gifted",    "free",    "range",    "gusty",    "lacking",    "thundering",    "arch",    "scorch",    "spray",    "follow",    "rot",    "attract",    "womanly",    "agreement",    "barbarous",    "thaw",    "secret",    "boil",    "bleach",    "work",    "gray",    "digestion",    "thumb",    "eye",    "permissible",    "toad",    "lip",    "communicate",    "cloudy",    "poison",    "changeable",    "naive",    "loose",    "toys",    "nebulous",    "stroke",    "tasty",    "volleyball",    "unwritten",    "blind",    "hug",    "load",    "crabby",    "nifty",    "envious",    "bells",    "believe",    "notebook",    "liquid",    "bang",    "donkey",    "quack",    "cute",    "voyage",    "caption",    "stitch",    "year",    "car",    "profit",    "political",    "smash",    "curly",    "remarkable",    "consider",    "deafening",    "pancake",    "mom",    "raspy",    "meeting",    "expert",    "drip",    "ashamed",    "price",    "drain",    "vacuous",    "pathetic",    "fuel",    "page",    "tug",    "faded",    "messy",    "evanescent",    "outstanding",    "admit",    "kill",    "mysterious",    "selfish",    "smelly",    "squirrel",    "zealous",    "snakes",    "sea",    "orange",    "burly",    "macabre",    "aggressive",    "finger",    "insidious",    "trick",    "interest",    "distribution",    "scratch",    "acrid",    "stick",    "time",    "disgusted",    "whistle",    "earn",    "snow",    "soggy",    "add",    "vegetable",    "knotty",    "copper",    "hospital",    "drag",    "hands",    "simplistic",    "promise",    "scattered",    "noise",    "alive",    "develop",    "concentrate",    "x-ray",    "neat",    "smile",    "list",    "wash",    "snobbish",    "acceptable",    "horses",    "mellow",    "horrible",    "conscious",    "distinct",    "tasteful",    "confuse",    "ten",    "delight",    "sort",    "nose",    "ablaze",    "teeny-tiny",    "connect",    "stiff",    "windy",    "alike",    "need",    "muddle",    "extra-large",    "save",    "lowly",    "vein",    "ludicrous",    "seal",    "rain",    "capable",    "simple",    "tense",    "tumble",    "broad",    "ancient",    "spade",    "heavy",    "trip",    "bridge",    "dislike",    "willing",    "boundless",    "run",    "signal",    "breakable",    "deranged",    "dad",    "join"];
 
@@ -30,7 +33,7 @@ export class BoardComponent implements OnInit {
 
   async ngOnInit() {
     this.word_queue = await this.genWords()
-    this.letters = document.querySelectorAll('app-word span')
+    this.letterSpan = document.querySelectorAll('app-word span')
     this.newRun()
     // for (let i = 0; i < this.word_queue[0].length; i++) {
     //   console.log(this.word_queue[0][i])
@@ -45,51 +48,54 @@ export class BoardComponent implements OnInit {
       console.log(curr, x.keyCode)
       // SPACE
       if (x.keyCode == 32) {
+        this.raw += curr;
         x.target.value = "";
         let temp: number = this.word_queue[this.curr_word].length || 0;
         for (let i = temp; i < this.cursor_pos; i++) {
-          this.letters[this.cursor_floor + i].classList.remove('letter-right')
-          this.letters[this.cursor_floor + i].classList.remove('letter-wrong')
+          this.letterSpan[this.cursor_floor + i].classList.remove('letter-right')
+          this.letterSpan[this.cursor_floor + i].classList.remove('letter-wrong')
+        }
+        for (let i = 0; i < temp; i++) {
+          this.letters.shift();
         }
         this.cursor_floor += temp;
-        this.cursor_pos = this.cursor_floor;
+        this.cursor_pos = this.cursor_floor + 1;
         this.curr_word++;
-        this.refreshCursor();
       } else if (x.keyCode === 8) {
         // BACKSPACE
-        if (curr) {
+        if (this.cursor_pos > this.cursor_floor) {
           this.cursor_pos--;
-          this.letters[this.cursor_pos].classList.remove('letter-right')
-          this.letters[this.cursor_pos].classList.remove('letter-wrong')
-          this.refreshCursor();
+          this.letterSpan[this.cursor_pos].classList.remove('letter-right')
+          this.letterSpan[this.cursor_pos].classList.remove('letter-wrong')
+
         }
       } else if (curr) {
-        // LETTERS
-        let currKey: number = x.keyCode + 32
-        console.log(currKey + "|" + this.cursor)
-        if (currKey == this.cursor.charCodeAt(0)) {
-          this.letters[this.cursor_pos].classList.add('letter-right')
-        } else {
-          this.letters[this.cursor_pos].classList.add('letter-wrong')
-        }
-        this.cursor_pos++
-        this.refreshCursor()
-
-        // this.cursor_pos++;
-        // for (let i = 0; i < curr.length; i++) {
-        //   let temp: number = this.cursor_floor + i;
-        //   if (this.letters[temp].textContent == curr[i]) {
-        //     this.letters[temp].classList.add('letter-right')
-        //   } else {
-        //     this.letters[temp].classList.add('letter-wrong')
-        //   }
+        // letterSpan
+        // let currKey: number = x.keyCode + 32
+        // console.log(currKey + "|" + this.cursor)
+        // if (currKey == this.cursor.charCodeAt(0)) {
+        //   this.letterSpan[this.cursor_pos].classList.add('letter-right')
+        // } else {
+        //   this.letterSpan[this.cursor_pos].classList.add('letter-wrong')
         // }
+        // this.cursor_pos++
+        // this.refreshCursor()
+
+        this.cursor_pos++;
+        for (let i = 0; i < this.cursor_pos - this.cursor_floor; i++) {
+          let temp: number = this.cursor_floor + i;
+          if (this.letters[i] == curr[i]) {
+            this.letterSpan[temp].classList.add('letter-right')
+          } else {
+            this.letterSpan[temp].classList.add('letter-wrong')
+          }
+        }
       }
     }
   }
 
   private refreshCursor(): void {
-    this.cursor = this.letters[this.cursor_pos].textContent
+    this.cursor = this.letterSpan[this.cursor_pos].textContent
   }
 
   async newRun() {
@@ -99,11 +105,11 @@ export class BoardComponent implements OnInit {
     }
     console.log(this.word_queue)
     console.log(this.word_list)
-    this.letters = document.querySelectorAll('app-word span')
-    this.letters.forEach((curr) => {
-      console.log(curr.textContent)
+    this.letterSpan = document.querySelectorAll('app-word span')
+    this.letterSpan.forEach((curr) => {
+      this.letters.push(curr.textContent || "");
     })
-    this.cursor = this.letters[0].textContent
+    this.cursor = this.letterSpan[0].textContent
     this.IN_GAME = true;
   }
 
