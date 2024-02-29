@@ -21,16 +21,8 @@ import { FooterComponent } from './footer/footer.component';
 })
 export class AppComponent implements OnInit {
   title = 'frontend';
-  private word_url: string = 'http://localhost:8000/words'
   public words!: string[];
-  public isLoading:boolean = true;
 
   ngOnInit(): void {
-    fetch(this.word_url)
-      .then((res) => res.json())
-      .then((word_data) => {
-        this.words = word_data
-        this.isLoading = false;
-      })
   }
 }

@@ -7,9 +7,11 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from wtype.serializers import UserSerializer, GroupSerializer, WordSerializer
 from os import path
+import json
+from random import sample
 
 basepath = path.dirname(__file__)
-filepath = path.abspath(path.join(basepath, "..", "words.txt"))
+filepath = path.abspath(path.join(basepath, "..", "words.json"))
 # Create your views here.
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -29,8 +31,13 @@ def getWord(request):
     # app = Word.objects.all()
     # serializer = WordSerializer(app, many=True)
     # return Response(serializer.data)
-    words = []
-    with open(filepath, 'r') as wordfile:
-        words = wordfile.read().split('\n')
-        return Response(words)
+    # words = []
+    # with open(filepath, 'r') as wordfile:
+    #     words = wordfile.read().split('\n')
+    #     return Response(words)
     #data = {'words': words}
+    words = []
+    n = 200
+    with open(filepath, 'r') as f:
+        words = json.load(f)
+    return Response(sample(words, n))

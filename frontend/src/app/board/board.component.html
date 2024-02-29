@@ -1,6 +1,6 @@
 
 
-<div class="container">
+<div *ngIf="!isFetching" class="container">
     <div class="word-container">
         <input type="text" class="player-text" 
             (keyup)="onKeyUp($event)"
@@ -11,6 +11,7 @@
         </div> -->
         <div class="word-wrapper">
             <app-word
+            #boardWords
             *ngFor="let val of word_queue"
             [value]="val"
             >
