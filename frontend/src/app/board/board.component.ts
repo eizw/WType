@@ -28,6 +28,7 @@ export class BoardComponent implements OnInit {
 
   raw: string = '';
   word_queue: string[] = [];
+  temp_word_queue: string[] = [];
   letters: string[] = [];
   @ViewChildren('boardWords') boardWords!: QueryList<any>;
   //word_list: string[] = [    "cry",    "wicked",    "icy",    "ajar",    "ghost",    "unable",    "girls",    "expect",    "gather",    "narrow",    "mate",    "agonizing",    "somber",    "flowery",    "shiny",    "bike",    "shelter",    "straight",    "royal",    "nauseating",    "pipe",    "entertain",    "keen",    "thinkable",    "gifted",    "free",    "range",    "gusty",    "lacking",    "thundering",    "arch",    "scorch",    "spray",    "follow",    "rot",    "attract",    "womanly",    "agreement",    "barbarous",    "thaw",    "secret",    "boil",    "bleach",    "work",    "gray",    "digestion",    "thumb",    "eye",    "permissible",    "toad",    "lip",    "communicate",    "cloudy",    "poison",    "changeable",    "naive",    "loose",    "toys",    "nebulous",    "stroke",    "tasty",    "volleyball",    "unwritten",    "blind",    "hug",    "load",    "crabby",    "nifty",    "envious",    "bells",    "believe",    "notebook",    "liquid",    "bang",    "donkey",    "quack",    "cute",    "voyage",    "caption",    "stitch",    "year",    "car",    "profit",    "political",    "smash",    "curly",    "remarkable",    "consider",    "deafening",    "pancake",    "mom",    "raspy",    "meeting",    "expert",    "drip",    "ashamed",    "price",    "drain",    "vacuous",    "pathetic",    "fuel",    "page",    "tug",    "faded",    "messy",    "evanescent",    "outstanding",    "admit",    "kill",    "mysterious",    "selfish",    "smelly",    "squirrel",    "zealous",    "snakes",    "sea",    "orange",    "burly",    "macabre",    "aggressive",    "finger",    "insidious",    "trick",    "interest",    "distribution",    "scratch",    "acrid",    "stick",    "time",    "disgusted",    "whistle",    "earn",    "snow",    "soggy",    "add",    "vegetable",    "knotty",    "copper",    "hospital",    "drag",    "hands",    "simplistic",    "promise",    "scattered",    "noise",    "alive",    "develop",    "concentrate",    "x-ray",    "neat",    "smile",    "list",    "wash",    "snobbish",    "acceptable",    "horses",    "mellow",    "horrible",    "conscious",    "distinct",    "tasteful",    "confuse",    "ten",    "delight",    "sort",    "nose",    "ablaze",    "teeny-tiny",    "connect",    "stiff",    "windy",    "alike",    "need",    "muddle",    "extra-large",    "save",    "lowly",    "vein",    "ludicrous",    "seal",    "rain",    "capable",    "simple",    "tense",    "tumble",    "broad",    "ancient",    "spade",    "heavy",    "trip",    "bridge",    "dislike",    "willing",    "boundless",    "run",    "signal",    "breakable",    "deranged",    "dad",    "join"];
@@ -35,7 +36,7 @@ export class BoardComponent implements OnInit {
   constructor() {}
 
   async ngOnInit() {
-    await this.genWords()
+    this.newRun()
     // for (let i = 0; i < this.word_queue[0].length; i++) {
     //   console.log(this.word_queue[0][i])
     // }
@@ -64,18 +65,19 @@ export class BoardComponent implements OnInit {
       console.log(curr, x.keyCode)
       // SPACE
       if (x.keyCode == 32) {
-        this.raw += curr;
+        this.raw += curr + " ";
         x.target.value = "";
-        let temp: number = this.word_queue[this.curr_word].length || 0;
+        let temp: number = (this.temp_word_queue.shift() || '').length || 0;
         for (let i = temp; i < this.cursor_pos; i++) {
           this.letterSpan[this.cursor_floor + i].classList.remove('letter-right')
           this.letterSpan[this.cursor_floor + i].classList.remove('letter-wrong')
         }
+        console.log('temp : ' + temp)
         for (let i = 0; i < temp; i++) {
           this.letters.shift();
         }
         this.cursor_floor += temp;
-        this.cursor_pos = this.cursor_floor + 1;
+        this.cursor_pos = this.cursor_floor;
         this.curr_word++;
       } else if (x.keyCode === 8) {
         // BACKSPACE
@@ -114,11 +116,12 @@ export class BoardComponent implements OnInit {
 
   async newRun() {
     if (this.IN_GAME) {
+      this.cursor = this.letterSpan[0].textContent
+      this.IN_GAME = false;
+    } else {
       await this.genWords()
-      this.IN_GAME = false
+      this.IN_GAME = true
     }
-    this.cursor = this.letterSpan[0].textContent
-    this.IN_GAME = true;
   }
 
   // fetchWords(): string[] {
@@ -134,6 +137,7 @@ export class BoardComponent implements OnInit {
       .then((res) => res.json())
       .then((word_data) => {
         this.word_queue = word_data
+        this.temp_word_queue = [...this.word_queue]
         this.isFetching = false;
       })
       .catch((err) => console.log(err))
