@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
+
 :root {
     --bg-color: #474747;
     --main-color: #8b64b9;

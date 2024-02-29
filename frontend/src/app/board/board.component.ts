@@ -55,6 +55,7 @@ export class BoardComponent implements OnInit {
       this.letterSpan.forEach((letter) => {
         this.letters.push(letter.textContent || '')
       })
+      this.letterSpan[0].id = 'cursor';
     }
   }
 
@@ -65,6 +66,7 @@ export class BoardComponent implements OnInit {
       console.log(curr, x.keyCode)
       // SPACE
       if (x.keyCode == 32) {
+        this.letterSpan[this.cursor_pos].id = '';
         this.raw += curr + " ";
         x.target.value = "";
         let temp: number = (this.temp_word_queue.shift() || '').length || 0;
@@ -82,9 +84,13 @@ export class BoardComponent implements OnInit {
       } else if (x.keyCode === 8) {
         // BACKSPACE
         if (this.cursor_pos > this.cursor_floor) {
-          this.cursor_pos--;
-          this.letterSpan[this.cursor_pos].classList.remove('letter-right')
-          this.letterSpan[this.cursor_pos].classList.remove('letter-wrong')
+          let d = 1
+          for (let i = this.cursor_pos - 1; i >= this.cursor_floor + curr.length; i--) {
+            this.cursor_pos--;
+            this.letterSpan[i].classList.remove('letter-right')
+            this.letterSpan[i].classList.remove('letter-wrong')
+          }
+          this.refreshCursor(d);
 
         }
       } else if (curr) {
@@ -100,21 +106,31 @@ export class BoardComponent implements OnInit {
         // this.refreshCursor()
 
         this.cursor_pos++;
-        for (let i = 0; i < this.cursor_pos - this.cursor_floor; i++) {
-          let temp: number = this.cursor_floor + i;
-          if (this.letters[i] == curr[i]) {
-            this.letterSpan[temp].classList.add('letter-right')
-          } else {
-            this.letterSpan[temp].classList.add('letter-wrong')
-          }
-        }
+        this.refreshCursor(-1);
+        this.checkLetters(curr);
       }
     } else {
       this.newRun()
     }
   }
 
-  async newRun() {
+  refreshCursor(d: number): void {
+    this.letterSpan[this.cursor_pos + d].id = '';
+    this.letterSpan[this.cursor_pos].id = 'cursor';
+  }
+
+  checkLetters(word: string): void {
+    for (let i = 0; i < this.cursor_pos - this.cursor_floor; i++) {
+      let temp: number = this.cursor_floor + i;
+      if (this.letters[i] == word[i]) {
+        this.letterSpan[temp].classList.add('letter-right')
+      } else {
+        this.letterSpan[temp].classList.add('letter-wrong')
+      }
+    }
+  }
+
+  async newRun(): Promise<void> {
     if (this.IN_GAME) {
       this.cursor = this.letterSpan[0].textContent
       this.IN_GAME = false;

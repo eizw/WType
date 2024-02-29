@@ -14,8 +14,11 @@
 }
 
 .word-wrapper {
+    position: relative;
+    z-index: 0;
     display: flex;
     justify-content: center;
+    user-select: none;
     width: 100%;
     flex-wrap: wrap;
     margin-left: 0;
@@ -32,13 +35,13 @@
 
 .player-text {
     position: absolute;
-    top: 50%;
+    z-index: 1;
+    top: 48.4%;
     transform: translateY(-50%);
     height: 117px;
     width: 70vw;
     opacity: 0;
 }
-
 
 
 h1 {
