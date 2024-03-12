@@ -3,6 +3,9 @@ import { WordComponent } from '../word/word.component';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import internal from 'stream';
+import { interval } from 'rxjs';
+import { timeStamp } from 'console';
+import { start } from 'repl';
 @Component({
   selector: 'app-board',
   standalone: true,
@@ -18,6 +21,7 @@ export class BoardComponent implements OnInit {
 
   // check
   isFetching: boolean = true;
+  isPaused: boolean = true;
   IN_GAME: boolean = false;
 
   letterSpan!: NodeListOf<Element>; // size; 10x3
@@ -33,9 +37,18 @@ export class BoardComponent implements OnInit {
   @ViewChildren('boardWords') boardWords!: QueryList<any>;
   //word_list: string[] = [    "cry",    "wicked",    "icy",    "ajar",    "ghost",    "unable",    "girls",    "expect",    "gather",    "narrow",    "mate",    "agonizing",    "somber",    "flowery",    "shiny",    "bike",    "shelter",    "straight",    "royal",    "nauseating",    "pipe",    "entertain",    "keen",    "thinkable",    "gifted",    "free",    "range",    "gusty",    "lacking",    "thundering",    "arch",    "scorch",    "spray",    "follow",    "rot",    "attract",    "womanly",    "agreement",    "barbarous",    "thaw",    "secret",    "boil",    "bleach",    "work",    "gray",    "digestion",    "thumb",    "eye",    "permissible",    "toad",    "lip",    "communicate",    "cloudy",    "poison",    "changeable",    "naive",    "loose",    "toys",    "nebulous",    "stroke",    "tasty",    "volleyball",    "unwritten",    "blind",    "hug",    "load",    "crabby",    "nifty",    "envious",    "bells",    "believe",    "notebook",    "liquid",    "bang",    "donkey",    "quack",    "cute",    "voyage",    "caption",    "stitch",    "year",    "car",    "profit",    "political",    "smash",    "curly",    "remarkable",    "consider",    "deafening",    "pancake",    "mom",    "raspy",    "meeting",    "expert",    "drip",    "ashamed",    "price",    "drain",    "vacuous",    "pathetic",    "fuel",    "page",    "tug",    "faded",    "messy",    "evanescent",    "outstanding",    "admit",    "kill",    "mysterious",    "selfish",    "smelly",    "squirrel",    "zealous",    "snakes",    "sea",    "orange",    "burly",    "macabre",    "aggressive",    "finger",    "insidious",    "trick",    "interest",    "distribution",    "scratch",    "acrid",    "stick",    "time",    "disgusted",    "whistle",    "earn",    "snow",    "soggy",    "add",    "vegetable",    "knotty",    "copper",    "hospital",    "drag",    "hands",    "simplistic",    "promise",    "scattered",    "noise",    "alive",    "develop",    "concentrate",    "x-ray",    "neat",    "smile",    "list",    "wash",    "snobbish",    "acceptable",    "horses",    "mellow",    "horrible",    "conscious",    "distinct",    "tasteful",    "confuse",    "ten",    "delight",    "sort",    "nose",    "ablaze",    "teeny-tiny",    "connect",    "stiff",    "windy",    "alike",    "need",    "muddle",    "extra-large",    "save",    "lowly",    "vein",    "ludicrous",    "seal",    "rain",    "capable",    "simple",    "tense",    "tumble",    "broad",    "ancient",    "spade",    "heavy",    "trip",    "bridge",    "dislike",    "willing",    "boundless",    "run",    "signal",    "breakable",    "deranged",    "dad",    "join"];
 
+  gameTime: number = 60;
+  timeLeft: number = this.gameTime;
+  interval: any;
+
+  timer!: any;
+  player_text!: any;
+
   constructor() {}
 
   async ngOnInit() {
+    this.player_text = document.querySelector('.player-text');
+    this.timer = document.querySelector('.timer');
     this.newRun()
     // for (let i = 0; i < this.word_queue[0].length; i++) {
     //   console.log(this.word_queue[0][i])
@@ -59,28 +72,24 @@ export class BoardComponent implements OnInit {
     }
   }
 
+  startGame(): void {
+    if (this.IN_GAME) {
+      return;
+    } else {
+      this.IN_GAME = true;
+      this.isPaused = false;
+    }
+  }
+
   onKeyUp(x: any): void {
+    this.startTimer();
     if (this.IN_GAME) {
       let curr: string = x.target.value;
       console.log(this.cursor_pos + "|" + this.curr_word + "|" + this.cursor_floor)
       console.log(curr, x.keyCode)
       // SPACE
       if (x.keyCode == 32) {
-        this.letterSpan[this.cursor_pos].id = '';
-        this.raw += curr + " ";
-        x.target.value = "";
-        let temp: number = (this.temp_word_queue.shift() || '').length || 0;
-        for (let i = temp; i < this.cursor_pos; i++) {
-          this.letterSpan[this.cursor_floor + i].classList.remove('letter-right')
-          this.letterSpan[this.cursor_floor + i].classList.remove('letter-wrong')
-        }
-        console.log('temp : ' + temp)
-        for (let i = 0; i < temp; i++) {
-          this.letters.shift();
-        }
-        this.cursor_floor += temp;
-        this.cursor_pos = this.cursor_floor;
-        this.curr_word++;
+        this.nextWord(x.target, curr);
       } else if (x.keyCode === 8) {
         // BACKSPACE
         if (this.cursor_pos > this.cursor_floor) {
@@ -107,7 +116,11 @@ export class BoardComponent implements OnInit {
 
         this.cursor_pos++;
         this.refreshCursor(-1);
-        this.checkLetters(curr);
+        let check: boolean = this.checkLetters(curr);
+        if ((this.temp_word_queue[0].length == this.cursor_pos - this.cursor_floor) && check) {
+          console.log('bruhasdfasdfsad')
+          this.nextWord(x.target, curr);
+        }
       }
     } else {
       this.newRun()
@@ -119,34 +132,63 @@ export class BoardComponent implements OnInit {
     this.letterSpan[this.cursor_pos].id = 'cursor';
   }
 
-  checkLetters(word: string): void {
+  nextWord(x: any, curr: string): void {
+    this.letterSpan[this.cursor_pos].id = '';
+    this.raw += curr + " ";
+    x.value = '';
+    let temp: number = (this.temp_word_queue.shift() || '').length || 0;
+    for (let i = temp; i < this.cursor_pos; i++) {
+      this.letterSpan[this.cursor_floor + i].classList.remove('letter-right')
+      this.letterSpan[this.cursor_floor + i].classList.remove('letter-wrong')
+    }
+    console.log('temp : ' + temp)
+    for (let i = 0; i < temp; i++) {
+      this.letters.shift();
+    }
+    this.cursor_floor += temp;
+    this.cursor_pos = this.cursor_floor;
+    this.refreshCursor(-2);
+    this.curr_word++;
+  }
+
+  checkLetters(word: string): boolean {
+    let clear = true;
     for (let i = 0; i < this.cursor_pos - this.cursor_floor; i++) {
       let temp: number = this.cursor_floor + i;
       if (this.letters[i] == word[i]) {
         this.letterSpan[temp].classList.add('letter-right')
       } else {
+        clear = false;
         this.letterSpan[temp].classList.add('letter-wrong')
       }
     }
+    return clear;
   }
 
-  async newRun(): Promise<void> {
+  startTimer(): void {
     if (this.IN_GAME) {
-      this.cursor = this.letterSpan[0].textContent
-      this.IN_GAME = false;
-    } else {
-      await this.genWords()
-      this.IN_GAME = true
+      this.interval = setInterval(() => {
+        if (!this.isPaused) {
+          if (this.gameTime > 0) {
+            this.timer.value = this.gameTime;
+            this.gameTime--;
+          } else {
+            this.IN_GAME = false;
+            this.gameTime = 60;
+          }
+        }
+      }, 1000);
     }
   }
 
-  // fetchWords(): string[] {
-  //   let temp: string[] = [];
-  //   fs.readFile('words.txt', function (err: any, res: any) {
-  //     temp = res.split()
-  //   })
-  //   return temp
-  // }
+  pauseTimer(): void {
+    clearInterval(this.interval);
+  }
+
+  async newRun(): Promise<void> {
+    await this.genWords()
+    this.IN_GAME = true
+  }
 
   genWords(): void {
     fetch(this.word_url)
@@ -158,24 +200,4 @@ export class BoardComponent implements OnInit {
       })
       .catch((err) => console.log(err))
   }
-
-  // genWords(): string[] {
-  //   let temp = this.word_list
-  //   let currentIndex = temp.length, randomIndex;
-
-  //   // While there remain elements to shuffle.
-  //   while (currentIndex > 0) {
-
-  //     // Pick a remaining element.
-  //     randomIndex = Math.floor(Math.random() * currentIndex);
-  //     currentIndex--;
-
-  //     // And swap it with the current element.
-  //     [temp[currentIndex], temp[randomIndex]] = [
-  //       temp[randomIndex], temp[currentIndex]];
-  //   }
-
-  //   this.word_queue = temp
-  //   return temp
-  // }
 }

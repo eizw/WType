@@ -3,9 +3,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
 
 :root {
-    --bg-color: #474747;
+    --bg-color: #262626;
     --main-color: #8b64b9;
-    --word-wrong: #b381e3;
+    --letter-wrong: rgb(204, 173, 225);
+    --letter-right: rgb(10, 10, 10);
 }
 
 html, body {

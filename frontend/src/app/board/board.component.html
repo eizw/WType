@@ -1,10 +1,12 @@
 
 
-<div *ngIf="!isFetching" class="container">
+<div *ngIf="!isFetching" class="board-container container">
+    <div class="timer">{{ gameTime }}</div>
     <div class="word-container">
         <input type="text" class="player-text" 
             (keyup)="onKeyUp($event)"
-            (click)="this.IN_GAME = true"
+            (focusout)="pauseTimer()"
+            (click)="startGame()"
         >
         <!-- <div class="player-cursor">
             |
