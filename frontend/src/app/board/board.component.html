@@ -1,7 +1,7 @@
 
 
 <div *ngIf="!isFetching" class="board-container container">
-    <div class="timer">{{ gameTime }}</div>
+    <div class="timer">{{gameTime}}</div>
     <div class="word-container">
         <input type="text" class="player-text" 
             (keyup)="onKeyUp($event)"
@@ -13,8 +13,8 @@
         </div> -->
         <div class="word-wrapper">
             <app-word
-            #boardWords
-            *ngFor="let val of word_queue"
+            class="word"
+            *ngFor="let val of word_queue; index as i"
             [value]="val"
             >
             </app-word>

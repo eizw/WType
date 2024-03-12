@@ -7,13 +7,17 @@ import { Component, Input } from '@angular/core';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule],
   template: `
-    <div class="word"><span
+    <span
       *ngFor="let letter of value.split('')"
       class="letter"
-    >{{letter}}</span></div>
+    >{{letter}}</span><span
+      *ngFor="let letter of extra?.split('')"
+      class="letter letter-extra"
+    >{{letter}}</span>
   `,
   styleUrl: './word.component.css'
 })
 export class WordComponent {
   @Input() value: string = "";
+  @Input() extra!: string;
 }

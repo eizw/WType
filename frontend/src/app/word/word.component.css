@@ -1,11 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
 
-.letter-wrong {
+.letter-wrong, .letter-extra {
     color: var(--letter-wrong);
 }
 
 .letter-right {
     color: var(--letter-right);
+}
+
+.letter-extra {
+    text-decoration: underline;
 }
 
 #cursor {
