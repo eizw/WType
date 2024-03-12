@@ -12,8 +12,7 @@ import { start } from 'repl';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule, 
     WordComponent
-  ],
-  templateUrl: `./board.component.html`,
+  ],templateUrl: `./board.component.html`,
   styleUrl: './board.component.css'
 })
 export class BoardComponent implements OnInit {
@@ -98,8 +97,13 @@ export class BoardComponent implements OnInit {
           let d = 1
           for (let i = this.cursor_pos - 1; i >= this.cursor_floor + curr.length; i--) {
             this.cursor_pos--;
-            this.letterSpan[i].classList.remove('letter-right')
-            this.letterSpan[i].classList.remove('letter-wrong')
+            let temp: any = this.letterSpan[i]
+            if (temp.classList.contains('letter-extra')) {
+              this.letterSpan[i].remove();
+            } else {
+              temp.classList.remove('letter-right')
+              temp.classList.remove('letter-wrong')
+            }
           }
           this.refreshCursor(d);
 
@@ -116,9 +120,10 @@ export class BoardComponent implements OnInit {
         // this.cursor_pos++
         // this.refreshCursor()
 
+        
+        this.checkLetters(curr);
         this.cursor_pos++;
         this.refreshCursor(-1);
-        this.checkLetters(curr);
       }
     } else {
       this.newRun()
@@ -149,7 +154,8 @@ export class BoardComponent implements OnInit {
 
   checkLetters(word: string): void {
     let l = this.cursor_pos - this.cursor_floor;
-    for (let i = 0; i < this.cursor_pos; i++) {
+    this.currWord.extra = word.substring(this.temp_word_queue[0].length - 1, this.cursor_pos) || ''
+    for (let i = 0; i < this.cursor_pos + 1; i++) {
       let temp: number = this.cursor_floor + i;
       if (this.curr_letters[i] == word[i]) {
         this.letterSpan[temp].classList.add('letter-right')
@@ -157,7 +163,7 @@ export class BoardComponent implements OnInit {
         this.letterSpan[temp].classList.add('letter-wrong')
       }
     }
-    this.currWord.extra = word.substring(this.cursor_pos, this.temp_word_queue[0].length-1) || ''
+   
   }
 
   startTimer(): void {
@@ -180,7 +186,8 @@ export class BoardComponent implements OnInit {
   async newRun(): Promise<void> {
     await this.genWords()
     this.curr_word = 0;
-    console.log(this.currWord)
+    this.cursor_pos = this.cursor_floor = 0
+
     this.IN_GAME = true
     this.curr_letters = this.temp_word_queue[0].split('')
   }
