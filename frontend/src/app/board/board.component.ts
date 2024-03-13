@@ -22,6 +22,7 @@ export class BoardComponent implements OnInit {
   isFetching: boolean = true;
   isPaused: boolean = true;
   IN_GAME: boolean = false;
+  GAME_STARTED: boolean = false;
 
   letterSpan!: NodeListOf<any>; // size; 10x3
   cursor: any; // current letter
@@ -68,12 +69,14 @@ export class BoardComponent implements OnInit {
     if (!this.isFetching) {
       this.letterSpan = document.querySelectorAll('app-word span')
       this.currWord = this.boardWords.get(this.curr_word);
+      console.log('letter added cuh');
     }
   }
 
   startGame(): void {
     if (this.IN_GAME) {
-      return;
+      if (this.isPaused)
+        this.startTimer();
     } else {
       this.letterSpan[0].id = 'cursor';
       console.log('game starts')
@@ -83,7 +86,8 @@ export class BoardComponent implements OnInit {
   }
 
   onKeyUp(x: any): void {
-    this.startTimer();
+    if (!this.GAME_STARTED)
+      this.startTimer();
     if (this.IN_GAME) {
       let curr: string = x.target.value;
       // console.log(this.cursor_pos + "|" + this.curr_word + "|" + this.cursor_floor)
@@ -167,7 +171,8 @@ export class BoardComponent implements OnInit {
   }
 
   startTimer(): void {
-    if (this.IN_GAME) {
+    if (this.isPaused) {
+      this.isPaused = false;
       this.interval = setInterval(() => {
         if (this.gameTime > 0) {  
           this.gameTime--;
@@ -181,6 +186,7 @@ export class BoardComponent implements OnInit {
 
   pauseTimer(): void {
     clearInterval(this.interval);
+    this.isPaused = true;
   }
 
   async newRun(): Promise<void> {
