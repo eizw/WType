@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NgIterable } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NgIterable, SimpleChanges } from '@angular/core';
 import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-word',
@@ -8,8 +8,9 @@ import { Component, Input } from '@angular/core';
   imports: [CommonModule],
   template: `
     <span
-      *ngFor="let letter of value.split('')"
+      *ngFor="let letter of word?.split(''); index as i"
       class="letter"
+      [ngClass]="{'letter': true, 'letter-right': hl[i]==1, 'letter-wrong': hl[i]==2}"
     >{{letter}}</span><span
       *ngFor="let letter of extra?.split('')"
       class="letter letter-extra"
@@ -18,6 +19,25 @@ import { Component, Input } from '@angular/core';
   styleUrl: './word.component.css'
 })
 export class WordComponent {
-  @Input() value: string = "";
+  @Input() word!: string;
   @Input() extra!: string;
+
+  hl: number[] = []; // 0 : none, 1 : correct, : 2 : incorrect
+
+  constructor() {}
+
+  ngOnChanges(changes: any) {
+    this.hl = Array(changes.word.currentValue.length).fill(0);
+  }
+
+  checkLetters(pword: string, check: string): void {
+    let letters = document.querySelectorAll('.letter')
+    this.hl.forEach((letter, i) => {
+      if (this.word[i] == pword[i]) {
+        this.hl[i] = 1;
+      } else {
+        this.hl[i] = 2
+      }
+    })
+  }
 }

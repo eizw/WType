@@ -125,7 +125,7 @@ export class BoardComponent implements OnInit {
         // this.refreshCursor()
 
         
-        this.checkLetters(curr);
+        this.currWord.checkLetters(curr, this.curr_letters.length);
         this.cursor_pos++;
         this.refreshCursor(-1);
       }
@@ -156,12 +156,18 @@ export class BoardComponent implements OnInit {
     this.refreshCursor(-2);
   }
 
-  checkLetters(word: string): void {
+  checkLetters(word: string, check: string): void {
     let l = this.cursor_pos - this.cursor_floor;
-    this.currWord.extra = word.substring(this.temp_word_queue[0].length - 1, this.cursor_pos) || ''
+    
+    this.currWord.extra = word.substring(check.length, this.cursor_pos) || ''
+    let i = 0;
+    for (let letter of this.currWord.children) {
+      let temp: number = this.cursor_floor + i
+    }
+    
     for (let i = 0; i < this.cursor_pos + 1; i++) {
       let temp: number = this.cursor_floor + i;
-      if (this.curr_letters[i] == word[i]) {
+      if (check[i] == word[i]) {
         this.letterSpan[temp].classList.add('letter-right')
       } else {
         this.letterSpan[temp].classList.add('letter-wrong')
