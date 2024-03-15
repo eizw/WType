@@ -28,9 +28,6 @@ export class BoardComponent implements AfterViewInit {
   cursor_pos: number = 0; // current letter index
   cursor_floor: number = 0; // lowest value for cursor_pos
 
-  raw: string = '';
-  word_queue: string[] = [];
-  temp_word_queue: string[] = [];
   
   curr_pos: number = 0;
   curr_letters: string[] = [];
@@ -45,6 +42,11 @@ export class BoardComponent implements AfterViewInit {
 
   timer!: any;
   player_text!: any;
+
+  //! analysis
+  raw!: string; // raw text
+  filtered_count!: number; // amount of correct words
+  word_queue: string[] = [];
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -108,6 +110,9 @@ export class BoardComponent implements AfterViewInit {
   }
 
   nextWord(x: any, curr: string): void {
+    if (curr == this.currWord.value) {
+      this.filtered_count++;
+    }
     this.currWord.changeCursor(-1);
     this.raw += curr + " ";
     x.value = '';
@@ -118,14 +123,15 @@ export class BoardComponent implements AfterViewInit {
   }
 
   startTimer(): void {
-    if (this.isPaused) {
+    if (this.isPaused && this.IN_GAME) {
       this.isPaused = false;
       this.interval = setInterval(() => {
         if (this.gameTime > 0) {  
           this.gameTime--;
         } else {
           this.IN_GAME = false;
-          this.gameTime = 60;
+          this.isPaused = true;
+          this.gameTime = 15;
         }
       }, 1000);
     }
@@ -136,12 +142,15 @@ export class BoardComponent implements AfterViewInit {
     this.isPaused = true;
   }
 
+  async evalRun(): Promise<void> {
+
+  }
+
   async genWords(): Promise<void> {
     await fetch(this.word_url)
       .then((res) => res.json())
       .then((word_data) => {
-        this.word_queue = word_data
-        this.temp_word_queue = [...this.word_queue]
+        this.word_queue = word_data;
         this.isFetching = false;
       })
       .catch((err) => console.log(err))
