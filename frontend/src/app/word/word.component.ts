@@ -33,7 +33,7 @@ export class WordComponent implements OnChanges {
 
   ngOnChanges(changes: any) {
     this.hl = Array(changes.word.currentValue.length).fill(0);
-    this.cd.detectChanges();  
+    this.cd.detectChanges();
   }
 
   changeCursor(d: number) : void {
@@ -61,7 +61,7 @@ export class WordComponent implements OnChanges {
 
   backspace(d: number): void {
     console.log('bs : ' + d)
-    for (let i = this.cursor - 1; i < d; i++) {
+    for (let i = this.cursor - 1; i >= d; i--) {
       if (i < this.word.length) {
         this.hl[i] = 0
       } else {

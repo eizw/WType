@@ -99,9 +99,8 @@ export class BoardComponent implements AfterViewInit {
         this.cursor_pos = curr.length;
         this.currWord.backspace(this.cursor_pos)
       } else if (curr) {
-        this.currWord.checkLetters(curr);
-        
         this.cursor_pos++;
+        this.currWord.checkLetters(curr);
         this.currWord.changeCursor(this.cursor_pos)
       }
       this.cd.markForCheck();
