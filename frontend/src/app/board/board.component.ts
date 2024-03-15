@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList, ElementRef, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { WordComponent } from '../word/word.component';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -15,7 +15,7 @@ import { start } from 'repl';
   ],templateUrl: `./board.component.html`,
   styleUrl: './board.component.css'
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent implements AfterViewInit {
   private word_url: string = 'http://localhost:8000/words'
 
   // check
@@ -24,7 +24,6 @@ export class BoardComponent implements OnInit {
   IN_GAME: boolean = false;
   GAME_STARTED: boolean = false;
 
-  letterSpan!: NodeListOf<any>; // size; 10x3
   cursor: any; // current letter
   cursor_pos: number = 0; // current letter index
   cursor_floor: number = 0; // lowest value for cursor_pos
@@ -47,22 +46,17 @@ export class BoardComponent implements OnInit {
   timer!: any;
   player_text!: any;
 
-  constructor() {}
+  constructor(private cd: ChangeDetectorRef) {}
 
-  async ngOnInit() {
-    this.player_text = document.querySelector('.player-text');
-    this.timer = document.querySelector('.timer');
+
+  async ngAfterViewInit() {
+    
     await this.genWords();
-    // for (let i = 0; i < this.word_queue[0].length; i++) {
-    //   console.log(this.word_queue[0][i])
-    // }
-    // this.newRun()
-  }
-
-  ngAfterViewInit() {
     this.boardWords.changes.subscribe(res => {
       this.boardRendered();
     })
+
+    this.cd.detectChanges();
   }
 
   boardRendered() {
@@ -96,27 +90,13 @@ export class BoardComponent implements OnInit {
       this.startTimer();
     if (this.IN_GAME) {
       let curr: string = x.target.value;
-      // console.log(this.cursor_pos + "|" + this.curr_pos + "|" + this.cursor_floor)
-      // console.log(curr, x.keyCode)
-      // SPACE
+      console.log(curr)
       if (x.keyCode == 32) {
+        // SPACE
         this.nextWord(x.target, curr);
       } else if (x.keyCode === 8) {
         // BACKSPACE
-        // if (this.cursor_pos > this.cursor_floor) {
-        //   let d = 1
-        //   for (let i = this.cursor_pos - 1; i >= this.cursor_floor + curr.length; i--) {
-        //     this.cursor_pos--;
-        //     let temp: any = this.letterSpan[i]
-        //     if (temp.classList.contains('letter-extra')) {
-        //       this.letterSpan[i].remove();
-        //     } else {
-        //       temp.classList.remove('letter-right')
-        //       temp.classList.remove('letter-wrong')
-        //     }
-        //   }
-        // }
-        this.cursor_pos = Math.max(0, this.cursor_pos - curr.length);
+        this.cursor_pos = curr.length;
         this.currWord.backspace(this.cursor_pos)
       } else if (curr) {
         this.currWord.checkLetters(curr);
@@ -124,6 +104,7 @@ export class BoardComponent implements OnInit {
         this.cursor_pos++;
         this.currWord.changeCursor(this.cursor_pos)
       }
+      this.cd.markForCheck();
     }
   }
 

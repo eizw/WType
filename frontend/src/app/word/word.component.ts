@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NgIterable, SimpleChanges, Output, ViewChild, ViewChildren } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NgIterable, SimpleChanges, Output, ViewChild, ViewChildren, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { Component, Input, QueryList } from '@angular/core';
 @Component({
   selector: 'app-word',
@@ -19,7 +19,7 @@ import { Component, Input, QueryList } from '@angular/core';
   `,
   styleUrl: './word.component.css'
 })
-export class WordComponent {
+export class WordComponent implements OnChanges {
   @Input() word!: string;
   extra!: string;
 
@@ -29,10 +29,11 @@ export class WordComponent {
   cursor: number = -1; // -1 = cursor is not on this word
   hl: number[] = []; // 0 : none, 1 : correct, : 2 : incorrect
 
-  constructor() {}
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnChanges(changes: any) {
     this.hl = Array(changes.word.currentValue.length).fill(0);
+    this.cd.detectChanges();  
   }
 
   changeCursor(d: number) : void {
@@ -59,13 +60,13 @@ export class WordComponent {
   }
 
   backspace(d: number): void {
-    if (d > this.word.length) {
-      this.extra = this.extra.slice(d, -1)
-    }
-    for (let i = d; i < this.cursor; i++) {
+    console.log('bs : ' + d)
+    for (let i = this.cursor - 1; i < d; i++) {
       if (i < this.word.length) {
-        this.hl[i] = 0;
+        this.hl[i] = 0
       } else {
+        this.extra = this.extra.slice(0, i - this.word.length);
+        console.log(this.extra)
       }
     }
     this.changeCursor(d);
