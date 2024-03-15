@@ -9,7 +9,6 @@ import { Component, Input } from '@angular/core';
   template: `
     <span
       *ngFor="let letter of word?.split(''); index as i"
-      class="letter"
       [ngClass]="{'letter': true, 'letter-right': hl[i]==1, 'letter-wrong': hl[i]==2}"
     >{{letter}}</span><span
       *ngFor="let letter of extra?.split('')"
@@ -30,9 +29,15 @@ export class WordComponent {
     this.hl = Array(changes.word.currentValue.length).fill(0);
   }
 
-  checkLetters(pword: string, check: string): void {
+  checkLetters(pword: string): void {
     let letters = document.querySelectorAll('.letter')
+    if (pword.length > this.word.length) {
+      this.extra = pword.substring(this.word.length, pword.length)
+    }
     this.hl.forEach((letter, i) => {
+      if (!pword[i]) {
+        return;
+      }
       if (this.word[i] == pword[i]) {
         this.hl[i] = 1;
       } else {

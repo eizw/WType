@@ -33,7 +33,7 @@ export class BoardComponent implements OnInit {
   word_queue: string[] = [];
   temp_word_queue: string[] = [];
   
-  curr_word: number = 0;
+  curr_pos: number = 0;
   curr_letters: string[] = [];
   currWord: any; // current word element
   extras!: string;
@@ -68,7 +68,7 @@ export class BoardComponent implements OnInit {
   boardRendered() {
     if (!this.isFetching) {
       this.letterSpan = document.querySelectorAll('app-word span')
-      this.currWord = this.boardWords.get(this.curr_word);
+      this.currWord = this.boardWords.get(this.curr_pos);
       console.log('letter added cuh');
     }
   }
@@ -90,7 +90,7 @@ export class BoardComponent implements OnInit {
       this.startTimer();
     if (this.IN_GAME) {
       let curr: string = x.target.value;
-      // console.log(this.cursor_pos + "|" + this.curr_word + "|" + this.cursor_floor)
+      // console.log(this.cursor_pos + "|" + this.curr_pos + "|" + this.cursor_floor)
       // console.log(curr, x.keyCode)
       // SPACE
       if (x.keyCode == 32) {
@@ -125,7 +125,8 @@ export class BoardComponent implements OnInit {
         // this.refreshCursor()
 
         
-        this.currWord.checkLetters(curr, this.curr_letters.length);
+        this.currWord.checkLetters(curr);
+        
         this.cursor_pos++;
         this.refreshCursor(-1);
       }
@@ -150,29 +151,28 @@ export class BoardComponent implements OnInit {
     }
     this.cursor_floor += temp;
     this.cursor_pos = this.cursor_floor;
-    this.curr_word++;
-    this.currWord = this.boardWords.get(this.curr_word);
+    this.curr_pos++;
+    this.currWord = this.boardWords.get(this.curr_pos);
     this.curr_letters = this.temp_word_queue[0].split('')
     this.refreshCursor(-2);
   }
 
   checkLetters(word: string, check: string): void {
-    let l = this.cursor_pos - this.cursor_floor;
+    // let l = this.cursor_pos - this.cursor_floor;
     
-    this.currWord.extra = word.substring(check.length, this.cursor_pos) || ''
-    let i = 0;
-    for (let letter of this.currWord.children) {
-      let temp: number = this.cursor_floor + i
-    }
+    // let i = 0;
+    // for (let letter of this.currWord.children) {
+    //   let temp: number = this.cursor_floor + i
+    // }
     
-    for (let i = 0; i < this.cursor_pos + 1; i++) {
-      let temp: number = this.cursor_floor + i;
-      if (check[i] == word[i]) {
-        this.letterSpan[temp].classList.add('letter-right')
-      } else {
-        this.letterSpan[temp].classList.add('letter-wrong')
-      }
-    }
+    // for (let i = 0; i < this.cursor_pos + 1; i++) {
+    //   let temp: number = this.cursor_floor + i;
+    //   if (check[i] == word[i]) {
+    //     this.letterSpan[temp].classList.add('letter-right')
+    //   } else {
+    //     this.letterSpan[temp].classList.add('letter-wrong')
+    //   }
+    // }
    
   }
 
@@ -197,7 +197,7 @@ export class BoardComponent implements OnInit {
 
   async newRun(): Promise<void> {
     await this.genWords()
-    this.curr_word = 0;
+    this.curr_pos = 0;
     this.cursor_pos = this.cursor_floor = 0
 
     this.IN_GAME = true
