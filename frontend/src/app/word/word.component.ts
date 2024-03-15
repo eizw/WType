@@ -14,7 +14,7 @@ import { Component, Input, QueryList } from '@angular/core';
     >{{letter}}</span><span
       #letter
       *ngFor="let letter of extra?.split(''); index as i"
-      [ngClass]="{'letter': true, 'letter-extra': true, 'cursor': cursor == (i + word.length)}"
+      [ngClass]="{'letter': true, 'letter-extra': true, 'cursor': cursor == (i + word.length + 1)}"
     >{{letter}}</span>
   `,
   styleUrl: './word.component.css'
