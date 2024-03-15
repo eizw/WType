@@ -12,7 +12,7 @@
     text-decoration: underline;
 }
 
-#cursor {
+.cursor {
     border-radius: 15%;
     background-color: white;
     color: black;

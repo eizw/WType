@@ -40,7 +40,7 @@ export class BoardComponent implements OnInit {
   @ViewChildren(WordComponent) boardWords!: QueryList<WordComponent>;
   //word_list: string[] = [    "cry",    "wicked",    "icy",    "ajar",    "ghost",    "unable",    "girls",    "expect",    "gather",    "narrow",    "mate",    "agonizing",    "somber",    "flowery",    "shiny",    "bike",    "shelter",    "straight",    "royal",    "nauseating",    "pipe",    "entertain",    "keen",    "thinkable",    "gifted",    "free",    "range",    "gusty",    "lacking",    "thundering",    "arch",    "scorch",    "spray",    "follow",    "rot",    "attract",    "womanly",    "agreement",    "barbarous",    "thaw",    "secret",    "boil",    "bleach",    "work",    "gray",    "digestion",    "thumb",    "eye",    "permissible",    "toad",    "lip",    "communicate",    "cloudy",    "poison",    "changeable",    "naive",    "loose",    "toys",    "nebulous",    "stroke",    "tasty",    "volleyball",    "unwritten",    "blind",    "hug",    "load",    "crabby",    "nifty",    "envious",    "bells",    "believe",    "notebook",    "liquid",    "bang",    "donkey",    "quack",    "cute",    "voyage",    "caption",    "stitch",    "year",    "car",    "profit",    "political",    "smash",    "curly",    "remarkable",    "consider",    "deafening",    "pancake",    "mom",    "raspy",    "meeting",    "expert",    "drip",    "ashamed",    "price",    "drain",    "vacuous",    "pathetic",    "fuel",    "page",    "tug",    "faded",    "messy",    "evanescent",    "outstanding",    "admit",    "kill",    "mysterious",    "selfish",    "smelly",    "squirrel",    "zealous",    "snakes",    "sea",    "orange",    "burly",    "macabre",    "aggressive",    "finger",    "insidious",    "trick",    "interest",    "distribution",    "scratch",    "acrid",    "stick",    "time",    "disgusted",    "whistle",    "earn",    "snow",    "soggy",    "add",    "vegetable",    "knotty",    "copper",    "hospital",    "drag",    "hands",    "simplistic",    "promise",    "scattered",    "noise",    "alive",    "develop",    "concentrate",    "x-ray",    "neat",    "smile",    "list",    "wash",    "snobbish",    "acceptable",    "horses",    "mellow",    "horrible",    "conscious",    "distinct",    "tasteful",    "confuse",    "ten",    "delight",    "sort",    "nose",    "ablaze",    "teeny-tiny",    "connect",    "stiff",    "windy",    "alike",    "need",    "muddle",    "extra-large",    "save",    "lowly",    "vein",    "ludicrous",    "seal",    "rain",    "capable",    "simple",    "tense",    "tumble",    "broad",    "ancient",    "spade",    "heavy",    "trip",    "bridge",    "dislike",    "willing",    "boundless",    "run",    "signal",    "breakable",    "deranged",    "dad",    "join"];
 
-  gameTime: number = 60;
+  gameTime: number = 15;
   timeLeft: number = this.gameTime;
   interval: any;
 
@@ -97,47 +97,30 @@ export class BoardComponent implements OnInit {
         this.nextWord(x.target, curr);
       } else if (x.keyCode === 8) {
         // BACKSPACE
-        if (this.cursor_pos > this.cursor_floor) {
-          let d = 1
-          for (let i = this.cursor_pos - 1; i >= this.cursor_floor + curr.length; i--) {
-            this.cursor_pos--;
-            let temp: any = this.letterSpan[i]
-            if (temp.classList.contains('letter-extra')) {
-              this.letterSpan[i].remove();
-            } else {
-              temp.classList.remove('letter-right')
-              temp.classList.remove('letter-wrong')
-            }
-          }
-          this.refreshCursor(d);
-
-        }
-      } else if (curr) {
-        // letterSpan
-        // let currKey: number = x.keyCode + 32
-        // console.log(currKey + "|" + this.cursor)
-        // if (currKey == this.cursor.charCodeAt(0)) {
-        //   this.letterSpan[this.cursor_pos].classList.add('letter-right')
-        // } else {
-        //   this.letterSpan[this.cursor_pos].classList.add('letter-wrong')
+        // if (this.cursor_pos > this.cursor_floor) {
+        //   let d = 1
+        //   for (let i = this.cursor_pos - 1; i >= this.cursor_floor + curr.length; i--) {
+        //     this.cursor_pos--;
+        //     let temp: any = this.letterSpan[i]
+        //     if (temp.classList.contains('letter-extra')) {
+        //       this.letterSpan[i].remove();
+        //     } else {
+        //       temp.classList.remove('letter-right')
+        //       temp.classList.remove('letter-wrong')
+        //     }
+        //   }
         // }
-        // this.cursor_pos++
-        // this.refreshCursor()
-
-        
+        this.cursor_pos = Math.max(0, this.cursor_pos - curr.length);
+        this.currWord.backspace(this.cursor_pos)
+      } else if (curr) {
         this.currWord.checkLetters(curr);
         
         this.cursor_pos++;
-        this.refreshCursor(-1);
+        this.currWord.changeCursor(this.cursor_pos)
       }
     } else {
       this.newRun()
     }
-  }
-
-  refreshCursor(d: number): void {
-    this.letterSpan[this.cursor_pos + d].id = '';
-    this.letterSpan[this.cursor_pos].id = 'cursor';
   }
 
   nextWord(x: any, curr: string): void {
@@ -145,35 +128,12 @@ export class BoardComponent implements OnInit {
     this.raw += curr + " ";
     x.value = '';
     let temp: number = (this.temp_word_queue.shift() || '').length || 0;
-    for (let i = temp; i < this.cursor_pos; i++) {
-      this.letterSpan[this.cursor_floor + i].classList.remove('letter-right')
-      this.letterSpan[this.cursor_floor + i].classList.remove('letter-wrong')
-    }
-    this.cursor_floor += temp;
-    this.cursor_pos = this.cursor_floor;
+    this.cursor_pos = 0;
     this.curr_pos++;
     this.currWord = this.boardWords.get(this.curr_pos);
+    this.letterSpan = this.currWord
     this.curr_letters = this.temp_word_queue[0].split('')
-    this.refreshCursor(-2);
-  }
-
-  checkLetters(word: string, check: string): void {
-    // let l = this.cursor_pos - this.cursor_floor;
-    
-    // let i = 0;
-    // for (let letter of this.currWord.children) {
-    //   let temp: number = this.cursor_floor + i
-    // }
-    
-    // for (let i = 0; i < this.cursor_pos + 1; i++) {
-    //   let temp: number = this.cursor_floor + i;
-    //   if (check[i] == word[i]) {
-    //     this.letterSpan[temp].classList.add('letter-right')
-    //   } else {
-    //     this.letterSpan[temp].classList.add('letter-wrong')
-    //   }
-    // }
-   
+    this.currWord.changeCursor(0);
   }
 
   startTimer(): void {
@@ -201,7 +161,6 @@ export class BoardComponent implements OnInit {
     this.cursor_pos = this.cursor_floor = 0
 
     this.IN_GAME = true
-    this.curr_letters = this.temp_word_queue[0].split('')
   }
 
   async genWords(): Promise<void> {

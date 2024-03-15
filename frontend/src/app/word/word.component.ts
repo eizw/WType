@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NgIterable, SimpleChanges } from '@angular/core';
-import { Component, Input } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NgIterable, SimpleChanges, Output, ViewChild, ViewChildren } from '@angular/core';
+import { Component, Input, QueryList } from '@angular/core';
 @Component({
   selector: 'app-word',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule],
   template: `
-    <span
+    <span 
+      #letter
       *ngFor="let letter of word?.split(''); index as i"
-      [ngClass]="{'letter': true, 'letter-right': hl[i]==1, 'letter-wrong': hl[i]==2}"
+      [ngClass]="{'letter': true, 'letter-right': hl[i]==1, 'letter-wrong': hl[i]==2, 'cursor': i == cursor}"
     >{{letter}}</span><span
+      #letter
       *ngFor="let letter of extra?.split('')"
       class="letter letter-extra"
     >{{letter}}</span>
@@ -19,14 +21,22 @@ import { Component, Input } from '@angular/core';
 })
 export class WordComponent {
   @Input() word!: string;
-  @Input() extra!: string;
+  extra!: string;
 
+  @Output() letters!: string[];
+  @ViewChildren('letter') letterSpan!: QueryList<any>
+
+  cursor: number = -1; // -1 = cursor is not on this word
   hl: number[] = []; // 0 : none, 1 : correct, : 2 : incorrect
 
   constructor() {}
 
   ngOnChanges(changes: any) {
     this.hl = Array(changes.word.currentValue.length).fill(0);
+  }
+
+  changeCursor(d: number) : void {
+    this.cursor = d;
   }
 
   checkLetters(pword: string): void {
@@ -44,5 +54,17 @@ export class WordComponent {
         this.hl[i] = 2
       }
     })
+  }
+
+  backspace(d: number): void {
+    for (let i = d; i < this.cursor; i++) {
+      if (i < this.word.length) {
+        this.hl[i] = 0;
+      } else {
+        this.extra = this.extra.slice(0, -1)
+      }
+    }
+    this.changeCursor(d);
+
   }
 }
