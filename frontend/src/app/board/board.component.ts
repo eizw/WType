@@ -17,6 +17,7 @@ import { start } from 'repl';
 })
 export class BoardComponent implements AfterViewInit {
   private word_url: string = 'http://localhost:8000/words'
+  private eval_url: string = 'http://localhost:8000/run/eval?'
 
   // check
   isFetching: boolean = true;
@@ -81,7 +82,6 @@ export class BoardComponent implements AfterViewInit {
         this.startTimer();
     } else {
       this.currWord.changeCursor(0);
-      console.log('game starts')
       this.isPaused = false;
       this.IN_GAME = true;
     }
@@ -127,11 +127,11 @@ export class BoardComponent implements AfterViewInit {
       this.isPaused = false;
       this.interval = setInterval(() => {
         if (this.gameTime > 0) {  
-          this.gameTime--;
+          this.timeLeft--;
         } else {
           this.IN_GAME = false;
           this.isPaused = true;
-          this.gameTime = 15;
+          this.timeLeft = this.gameTime;
         }
       }, 1000);
     }
@@ -143,7 +143,13 @@ export class BoardComponent implements AfterViewInit {
   }
 
   async evalRun(): Promise<void> {
-
+    await fetch(this.eval_url + new URLSearchParams({
+      raw: this.raw,
+      fcount: this.filtered_count.toString(),
+      time: this.gameTime.toString(),
+    }))
+      .then(res => res.json())
+      .then(console.log)
   }
 
   async genWords(): Promise<void> {

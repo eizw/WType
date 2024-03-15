@@ -9,6 +9,7 @@ from wtype.serializers import UserSerializer, GroupSerializer, WordSerializer
 from os import path
 import json
 from random import sample
+import math
 
 basepath = path.dirname(__file__)
 filepath = path.abspath(path.join(basepath, "..", "words.json"))
@@ -28,16 +29,24 @@ class GroupViewSet(viewsets.ModelViewSet):
 # GET WORDS
 @api_view(['GET'])
 def getWord(request):
-    # app = Word.objects.all()
-    # serializer = WordSerializer(app, many=True)
-    # return Response(serializer.data)
-    # words = []
-    # with open(filepath, 'r') as wordfile:
-    #     words = wordfile.read().split('\n')
-    #     return Response(words)
-    #data = {'words': words}
     words = []
     n = 200
     with open(filepath, 'r') as f:
         words = json.load(f)
     return Response(sample(words, n))
+
+@api_view(['GET'])
+def evalRun(request):
+    raw = request.GET['raw']
+    fcount = request.GET['fcount']
+    time = request.GET['time']
+
+    raw_wpm = len(raw.split(' ')) // time
+    filtered_wpm = fcount // time
+
+    res = {
+        'raw': raw_wpm,
+        'filtered': filtered_wpm
+    }
+
+    return Response(res)
