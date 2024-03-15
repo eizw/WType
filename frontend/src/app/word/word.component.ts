@@ -13,8 +13,8 @@ import { Component, Input, QueryList } from '@angular/core';
       [ngClass]="{'letter': true, 'letter-right': hl[i]==1, 'letter-wrong': hl[i]==2, 'cursor': i == cursor}"
     >{{letter}}</span><span
       #letter
-      *ngFor="let letter of extra?.split('')"
-      class="letter letter-extra"
+      *ngFor="let letter of extra?.split(''); index as i"
+      [ngClass]="{'letter': true, 'letter-extra': true, 'cursor': cursor == (i + word.length)}"
     >{{letter}}</span>
   `,
   styleUrl: './word.component.css'
@@ -37,6 +37,8 @@ export class WordComponent {
 
   changeCursor(d: number) : void {
     this.cursor = d;
+    console.log(d)
+    console.log(this.extra?.length + this.word.length)
   }
 
   checkLetters(pword: string): void {
@@ -57,14 +59,15 @@ export class WordComponent {
   }
 
   backspace(d: number): void {
+    if (d > this.word.length) {
+      this.extra = this.extra.slice(d, -1)
+    }
     for (let i = d; i < this.cursor; i++) {
       if (i < this.word.length) {
         this.hl[i] = 0;
       } else {
-        this.extra = this.extra.slice(0, -1)
       }
     }
     this.changeCursor(d);
-
   }
 }

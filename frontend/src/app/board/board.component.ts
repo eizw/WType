@@ -52,7 +52,7 @@ export class BoardComponent implements OnInit {
   async ngOnInit() {
     this.player_text = document.querySelector('.player-text');
     this.timer = document.querySelector('.timer');
-    this.newRun()
+    await this.genWords();
     // for (let i = 0; i < this.word_queue[0].length; i++) {
     //   console.log(this.word_queue[0][i])
     // }
@@ -67,10 +67,16 @@ export class BoardComponent implements OnInit {
 
   boardRendered() {
     if (!this.isFetching) {
-      this.letterSpan = document.querySelectorAll('app-word span')
       this.currWord = this.boardWords.get(this.curr_pos);
       console.log('letter added cuh');
+      this.newRun();
     }
+  }
+
+  newRun(): void {
+    this.cursor_pos = 0;
+    this.currWord = this.boardWords.get(this.curr_pos);
+    this.currWord.changeCursor(0);
   }
 
   startGame(): void {
@@ -78,10 +84,10 @@ export class BoardComponent implements OnInit {
       if (this.isPaused)
         this.startTimer();
     } else {
-      this.letterSpan[0].id = 'cursor';
+      this.currWord.changeCursor(0);
       console.log('game starts')
-      this.IN_GAME = true;
       this.isPaused = false;
+      this.IN_GAME = true;
     }
   }
 
@@ -118,21 +124,16 @@ export class BoardComponent implements OnInit {
         this.cursor_pos++;
         this.currWord.changeCursor(this.cursor_pos)
       }
-    } else {
-      this.newRun()
     }
   }
 
   nextWord(x: any, curr: string): void {
-    this.letterSpan[this.cursor_pos].id = '';
+    this.currWord.changeCursor(-1);
     this.raw += curr + " ";
     x.value = '';
-    let temp: number = (this.temp_word_queue.shift() || '').length || 0;
     this.cursor_pos = 0;
     this.curr_pos++;
     this.currWord = this.boardWords.get(this.curr_pos);
-    this.letterSpan = this.currWord
-    this.curr_letters = this.temp_word_queue[0].split('')
     this.currWord.changeCursor(0);
   }
 
@@ -153,14 +154,6 @@ export class BoardComponent implements OnInit {
   pauseTimer(): void {
     clearInterval(this.interval);
     this.isPaused = true;
-  }
-
-  async newRun(): Promise<void> {
-    await this.genWords()
-    this.curr_pos = 0;
-    this.cursor_pos = this.cursor_floor = 0
-
-    this.IN_GAME = true
   }
 
   async genWords(): Promise<void> {
