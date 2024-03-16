@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User, Group
+from django.contrib.auth import authenticate, login, logout
 from wtype.models import Word
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, renderer_classes
-from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
-from wtype.serializers import UserSerializer, GroupSerializer, WordSerializer
+from wtype.serializers import UserSerializer, GroupSerializer
 from os import path
 import json
 from random import sample
@@ -25,6 +25,17 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+@api_view(['POST'])
+def loginUser(request):
+    username = request.get(username)
+    password = request.get(password)
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return Response('Login successful')
+    else:
+        return Response('Invalid login')
 
 # GET WORDS
 @api_view(['GET'])
