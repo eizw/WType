@@ -1,5 +1,5 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from os import path
 import json
 from random import sample
@@ -21,6 +21,8 @@ filepath = path.abspath(path.join(basepath, "..", "words.json"))
 
 # GET WORDS
 @api_view(['GET'])
+@authentication_classes([])
+@permission_classes([])
 def getWord(request):
     words = []
     n = 200
@@ -28,7 +30,10 @@ def getWord(request):
         words = json.load(f)
     return Response(sample(words, n))
 
+
 @api_view(['GET'])
+@authentication_classes([])
+@permission_classes([])
 def evalRun(request):
     raw = request.GET['raw']
     fcount = request.GET['fcount']
