@@ -129,7 +129,7 @@ export class BoardComponent implements AfterViewInit {
     if (this.isPaused && this.IN_GAME) {
       this.isPaused = false;
       this.interval = setInterval(() => {
-        if (this.gameTime > 0) {  
+        if (this.timeLeft > 0) {  
           this.timeLeft--;
         } else {
           this.IN_GAME = false;
