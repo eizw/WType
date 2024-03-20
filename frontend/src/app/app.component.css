@@ -10,10 +10,24 @@
         "header"
         "board"
         "footer"; */
-    grid-template-rows: auto 10% 70% 10% auto;
+    grid-template-rows: auto 80% auto;
     gap: 10px;
     margin-left: 15%;
     margin-right: 15%;
+}
+
+.game-container {
+    display: grid;
+    gap: 15px;
+    grid-template-rows: 10% 80%;
+    justify-content: center;
+    align-items: center;
+}
+
+.reset-btn {
+    align-self: center;
+    justify-self: center;
+    width: 30%;
 }
 
 app-board {

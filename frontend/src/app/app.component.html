@@ -1,8 +1,10 @@
 <div class="main-container">
     <app-header></app-header>
-    <app-boardoptions></app-boardoptions>
-    <app-board [gameTime]="gameTime"></app-board>
-    <div></div>
+    <div class="game-container">
+        <app-boardoptions></app-boardoptions>
+        <app-board #gameBoard [gameTime]="gameTime"></app-board>
+        <button class="reset-btn" (click)="gameBoard.genWords()">RESET</button>
+    </div>
     <app-footer></app-footer>
 </div>
 <router-outlet>
