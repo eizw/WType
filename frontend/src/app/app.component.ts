@@ -5,6 +5,7 @@ import { HeaderComponent } from './header/header.component';
 import { WordComponent } from './word/word.component';
 import { BoardComponent } from './board/board.component';
 import { FooterComponent } from './footer/footer.component';
+import { BoardoptionsComponent } from './boardoptions/boardoptions.component';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 @Component({
@@ -14,6 +15,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
   imports: [CommonModule, RouterOutlet,
     WordComponent,
     BoardComponent,
+    BoardoptionsComponent,
     HeaderComponent,
     FooterComponent,
     HttpClientModule,

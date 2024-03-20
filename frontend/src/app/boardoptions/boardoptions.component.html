@@ -1,3 +1,10 @@
-<div id="board-options">
-    bruh
+<div>
+    <div id="board-options">
+        <ul class="time-option-list">
+            <li
+                *ngFor="let time of times"
+                class="time-option"
+            >{{ time }}</li>
+        </ul>
+    </div>
 </div>
