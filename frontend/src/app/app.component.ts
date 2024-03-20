@@ -21,6 +21,7 @@ import { FooterComponent } from './footer/footer.component';
 })
 export class AppComponent implements OnInit {
   title = 'frontend';
+  gameTime: number = 15;
   public words!: string[];
 
   ngOnInit(): void {

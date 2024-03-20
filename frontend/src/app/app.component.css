@@ -10,7 +10,7 @@
         "header"
         "board"
         "footer"; */
-    grid-template-rows: auto 80% auto;
+    grid-template-rows: auto 10% 70% 10% auto;
     gap: 10px;
     margin-left: 15%;
     margin-right: 15%;
