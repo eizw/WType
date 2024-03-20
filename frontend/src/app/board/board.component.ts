@@ -2,16 +2,15 @@ import { Component, OnInit, Input, ViewChildren, QueryList, ElementRef, ViewChil
 import { WordComponent } from '../word/word.component';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import internal from 'stream';
-import { interval } from 'rxjs';
-import { timeStamp } from 'console';
-import { start } from 'repl';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-board',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [CommonModule, 
-    WordComponent
+  imports: [
+    CommonModule, 
+    WordComponent,
+    HttpClientModule,
   ],templateUrl: `./board.component.html`,
   styleUrl: './board.component.css'
 })
@@ -50,12 +49,13 @@ export class BoardComponent implements AfterViewInit {
   filtered_count!: number; // amount of correct words
   word_queue: string[] = [];
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef, private http: HttpClient) {}
 
 
   async ngAfterViewInit() {
     
     await this.genWords();
+    console.log(this.word_queue)
     this.boardWords.changes.subscribe(res => {
       this.boardRendered();
     })
@@ -135,6 +135,7 @@ export class BoardComponent implements AfterViewInit {
           this.IN_GAME = false;
           this.isPaused = true;
           this.timeLeft = this.gameTime;
+          this.evalRun();
         }
       }, 1000);
     }
@@ -156,12 +157,21 @@ export class BoardComponent implements AfterViewInit {
   }
 
   async genWords(): Promise<void> {
-    await fetch(this.word_url)
-      .then((res) => res.json())
-      .then((word_data) => {
-        this.word_queue = word_data;
+    await this.http.get<string[]>(this.word_url).subscribe({
+      next: data => {
+        this.word_queue = data
         this.isFetching = false;
-      })
-      .catch((err) => console.log(err))
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
+    // await fetch(this.word_url)
+    //   .then((res) => res.json())
+    //   .then((word_data) => {
+    //     this.word_queue = word_data;
+    //     this.isFetching = false;
+    //   })
+    //   .catch((err) => console.log(err))
   }
 }

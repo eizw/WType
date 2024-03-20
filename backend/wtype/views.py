@@ -36,15 +36,24 @@ def getWord(request):
 @permission_classes([])
 def evalRun(request):
     raw = request.GET['raw']
-    fcount = request.GET['fcount']
-    time = request.GET['time']
+    words = request.GET.getList('words[]')
+    fcount = int(request.GET['fcount'])
+    time = int(request.GET['time'])
 
-    raw_wpm = len(raw.split(' ')) // time
-    filtered_wpm = fcount // time
+    raw_words = raw.split(' ')
+    comp = [0] * len(raw_words)# 0 = false, 1 = true
+    for i, word in enumerate(raw_words):
+        if (word == words[i]):
+            comp[i] = 1
+    
+    
+    raw_wpm = len(raw_words) / time
+    filtered_wpm = fcount / time
 
     res = {
         'raw': raw_wpm,
-        'filtered': filtered_wpm
+        'filtered': filtered_wpm,
+        'comp': comp,
     }
 
     return Response(res)
