@@ -2,8 +2,10 @@
     <div id="board-options">
         <ul class="time-option-list">
             <li
+                #timeOption
                 *ngFor="let time of times"
                 class="time-option"
+                (click)="selectTime($event)"
             >{{ time }}</li>
         </ul>
     </div>

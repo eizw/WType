@@ -1,6 +1,9 @@
 #board-options {
     width: 100%;
-    background-color: #a9a9a9;
+    background-color: #e6e6e60e;
+    border-radius: 25px;
+    padding-left: 2%;
+    border: solid black 2px;
 }
 
 .time-option-list {
@@ -11,5 +14,17 @@
 }
 
 .time-option {
+    font-family: "Source Code Pro", monospace;
+    font-optical-sizing: auto;
+    font-style: normal;
+    text-align: center;
+    font-family: sans-serif;
+    color: white;
+    font-size: 24px;
     float: left;
+    padding: 10px;
+}
+
+#selected-time {
+    color: rgb(164, 98, 226);
 }

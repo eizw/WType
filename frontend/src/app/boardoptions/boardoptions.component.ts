@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-
+import { Component, Output, EventEmitter, ViewChildren  } from '@angular/core';
 @Component({
   selector: 'app-boardoptions',
   standalone: true,
@@ -12,6 +11,17 @@ import { Component } from '@angular/core';
 })
 export class BoardoptionsComponent {
   times = [15, 30, 60, 120]
+  @Output() selectedTime = new EventEmitter<number>();
+
+  @ViewChildren('timeOption') timeOption: any;
   
   constructor() {}
+
+  selectTime(x: any) {
+    this.selectedTime.emit(x.target.innerHTML);
+    this.selectedTime.forEach((time) => {
+      time
+    })
+    x.target.id = 'selected-time'
+  }
 }

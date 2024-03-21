@@ -38,4 +38,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  selectTime(x: any) {
+    this.gameTime = x;
+
+  }
 }
