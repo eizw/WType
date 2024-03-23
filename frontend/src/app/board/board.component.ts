@@ -1,8 +1,9 @@
-import { Component, Input, ViewChildren, QueryList, ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges } from '@angular/core';
+import { Component, Input, ViewChildren, QueryList, ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges, Output } from '@angular/core';
 import { WordComponent } from '../word/word.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpParams } from '@angular/common/http';
+import { EventEmitter } from 'stream';
 @Component({
   selector: 'app-board',
   standalone: true,
@@ -64,7 +65,8 @@ export class BoardComponent implements AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.timeLeft = changes['gameTime'].currentValue;
+    if (!this.IN_GAME)
+      this.timeLeft = changes['gameTime'].currentValue;
   }
 
 
@@ -152,16 +154,14 @@ export class BoardComponent implements AfterViewInit {
   }
 
   async evalRun(): Promise<void> {
-    await fetch(this.eval_url + new URLSearchParams({
-      raw: this.raw,
-      fcount: this.filtered_count.toString(),
-      time: this.gameTime.toString(),
-    }))
-      .then(res => res.json())
-      .then(console.log)
+    let params = new HttpParams()
+      .set('raw', this.raw)
+      .set('words', this.word_queue.join(' '))
+      .set('time', this.gameTime);
   }
 
   async genWords(): Promise<void> {
+    this.IN_GAME = false;
     await this.http.get<string[]>(this.word_url).subscribe({
       next: data => {
         this.word_queue = data
