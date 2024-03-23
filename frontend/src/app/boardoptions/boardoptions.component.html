@@ -4,6 +4,7 @@
             <li
                 #timeOption
                 *ngFor="let time of times"
+                id="{{ (currTime == time) ? 'selected-time' : ''}}"
                 class="time-option"
                 (click)="selectTime($event)"
             >{{ time }}</li>
