@@ -1,4 +1,4 @@
-import { Component, Input, ViewChildren, QueryList, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ViewChildren, QueryList, ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { WordComponent } from '../word/word.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -60,9 +60,13 @@ export class BoardComponent implements AfterViewInit {
     this.boardWords.changes.subscribe(res => {
       this.boardRendered();
     })
-
     this.cd.detectChanges();
   }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.timeLeft = changes['gameTime'].currentValue;
+  }
+
 
   boardRendered() {
     if (!this.isFetching) {

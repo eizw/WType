@@ -19,7 +19,7 @@
 .game-container {
     display: grid;
     gap: 15px;
-    grid-template-rows: 10% 80%;
+    grid-template-rows: 5% 75% 15%;
     justify-content: center;
     align-items: center;
 }
@@ -27,7 +27,10 @@
 .reset-btn {
     align-self: center;
     justify-self: center;
-    width: 30%;
+    background-color: #a9a9a9;
+    border-radius: 12px;
+    font-size: 20px;
+    padding: 1% 3%;
 }
 
 app-board {
