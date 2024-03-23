@@ -1,9 +1,8 @@
-import { Component, Input, ViewChildren, QueryList, ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges, Output } from '@angular/core';
+import { Component, Input, ViewChildren, QueryList, ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { WordComponent } from '../word/word.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule, HttpParams } from '@angular/common/http';
-import { EventEmitter } from 'stream';
 @Component({
   selector: 'app-board',
   standalone: true,
@@ -26,7 +25,7 @@ export class BoardComponent implements AfterViewInit {
   GAME_STARTED: boolean = false;
 
 
-  @Input() gameTime: number = 15;
+  @Input() gameTime: number = 3;
 
   cursor_pos: number = 0; // current letter index
   cursor_floor: number = 0; // lowest value for cursor_pos
@@ -50,6 +49,8 @@ export class BoardComponent implements AfterViewInit {
   raw!: string; // raw text
   filtered_count!: number; // amount of correct words
   word_queue: string[] = [];
+  run_summary: any;
+  @Output() evaluatedRun = new EventEmitter();
 
   constructor(private cd: ChangeDetectorRef, private http: HttpClient) {}
 
@@ -158,6 +159,17 @@ export class BoardComponent implements AfterViewInit {
       .set('raw', this.raw)
       .set('words', this.word_queue.join(' '))
       .set('time', this.gameTime);
+
+    await this.http.get<Object>(this.eval_url, { params: params }).subscribe({
+      next: data => {
+        console.log(data)
+        this.run_summary = data;
+        this.evaluatedRun.emit(this.run_summary);
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
   }
 
   async genWords(): Promise<void> {

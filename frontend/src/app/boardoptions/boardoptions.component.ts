@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { ElementSchemaRegistry } from '@angular/compiler';
 import { Component, Output, EventEmitter, ViewChildren, OnInit  } from '@angular/core';
 @Component({
   selector: 'app-boardoptions',
