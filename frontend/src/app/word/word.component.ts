@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NgIterable, SimpleChanges, Output, ViewChild, ViewChildren, OnChanges, ChangeDetectorRef } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NgIterable, SimpleChanges, Output, ViewChild, ViewChildren, OnChanges, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { Component, Input, QueryList } from '@angular/core';
 @Component({
   selector: 'app-word',
@@ -29,7 +29,7 @@ export class WordComponent implements OnChanges {
   cursor: number = -1; // -1 = cursor is not on this word
   hl: number[] = []; // 0 : none, 1 : correct, : 2 : incorrect
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef, private elRef: ElementRef) {}
 
   ngOnChanges(changes: any) {
     this.hl = Array(changes.word.currentValue.length).fill(0);
@@ -66,5 +66,10 @@ export class WordComponent implements OnChanges {
       }
     }
     this.changeCursor(d);
+  }
+
+  getYPos(ref: ElementRef) {
+    console.log(this.elRef.nativeElement.offsetTop)
+    return this.elRef.nativeElement.offsetTop
   }
 }
