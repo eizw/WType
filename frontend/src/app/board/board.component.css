@@ -52,8 +52,11 @@
 }
 
 .word-done {
+    visibility: hidden;
     opacity: 0%;
-    display: none;
+    transition: color 0.25s, height 1.5s, visibility 0s, opacity 1.5s linear;
+    height: 0;
+    color: var(--bg-color);
 }
 
 h1 {
@@ -61,6 +64,8 @@ h1 {
 }
 
 app-word {
+    visibility: visible;
+    opacity: 1;
     transition: all 0.25s;
     float:left;
     display: inline;

@@ -136,7 +136,7 @@ export class BoardComponent implements AfterViewInit {
     this.currWord = this.boardWords.get(this.curr_pos);
     this.currWord.changeCursor(0);
 
-    if (this.currWord.getYPos() > this.scroll_threshold) {
+    if (this.currWord.getYPos() > 0) {
       this.scroll_word = this.curr_pos;
     }
   }
