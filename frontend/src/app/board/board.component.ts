@@ -52,13 +52,15 @@ export class BoardComponent implements AfterViewInit {
   run_summary: any;
   @Output() evaluatedRun = new EventEmitter();
 
+  //! board SCROLL
+  scroll_threshold: number = 0;
+  scroll_word: number = -1;
+
   constructor(private cd: ChangeDetectorRef, private http: HttpClient) {}
 
 
   async ngAfterViewInit() {
-    
     await this.genWords();
-    console.log(this.word_queue)
     this.boardWords.changes.subscribe(res => {
       this.boardRendered();
     })
@@ -74,6 +76,8 @@ export class BoardComponent implements AfterViewInit {
   boardRendered() {
     if (!this.isFetching) {
       this.currWord = this.boardWords.get(this.curr_pos);
+      this.scroll_threshold = this.currWord.nativeElement.offsetBottom
+      console.log(this.scroll_threshold)
       console.log('letter added cuh');
       this.newRun();
     }
@@ -130,10 +134,14 @@ export class BoardComponent implements AfterViewInit {
     this.curr_pos++;
     this.currWord = this.boardWords.get(this.curr_pos);
     this.currWord.changeCursor(0);
+
+    if (this.currWord.nativeElement.offsetBottom < this.scroll_threshold) {
+      this.scroll_word = this.curr_pos;
+
+    }
   }
 
   startTimer(): void {
-    console.log(this.isPaused, this.IN_GAME)
     if (this.isPaused && this.IN_GAME) {
       this.isPaused = false;
       this.interval = setInterval(() => {
@@ -174,6 +182,7 @@ export class BoardComponent implements AfterViewInit {
 
   async genWords(): Promise<void> {
     this.IN_GAME = false;
+    this.isPaused = true;
     await this.http.get<string[]>(this.word_url).subscribe({
       next: data => {
         this.word_queue = data

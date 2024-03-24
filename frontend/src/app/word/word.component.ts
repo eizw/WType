@@ -38,8 +38,6 @@ export class WordComponent implements OnChanges {
 
   changeCursor(d: number) : void {
     this.cursor = d;
-    console.log(d)
-    console.log(this.extra?.length + this.word.length)
   }
 
   checkLetters(pword: string): void {
@@ -60,13 +58,11 @@ export class WordComponent implements OnChanges {
   }
 
   backspace(d: number): void {
-    console.log('bs : ' + d)
     for (let i = this.cursor - 1; i >= d; i--) {
       if (i < this.word.length) {
         this.hl[i] = 0
       } else {
         this.extra = this.extra.slice(0, i - this.word.length);
-        console.log(this.extra)
       }
     }
     this.changeCursor(d);

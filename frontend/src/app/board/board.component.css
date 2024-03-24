@@ -51,6 +51,10 @@
     font-size: 32px;
 }
 
+.word-done {
+    display: none;
+}
+
 h1 {
     color: rgb(112, 48, 171);
 }
