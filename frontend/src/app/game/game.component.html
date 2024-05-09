@@ -1,0 +1,6 @@
+
+<div class="game-container">
+    <app-boardoptions (selectedTime)="selectTime($event)"></app-boardoptions>
+    <app-board #gameBoard [gameTime]="gameTime"></app-board>
+    <button class="reset-btn" (click)="gameBoard.genWords()">↺</button>
+</div>

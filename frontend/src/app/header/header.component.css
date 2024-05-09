@@ -1,4 +1,46 @@
+.navbar {
+    font-family: "Source Code Pro", monospace;
+    font-optical-sizing: auto;
+    font-style: normal;
+    color: white;
 
+    display: flex;
+    flex-direction: row;
+    flex-basis: auto;
+}
+
+h1.nav-btn {
+    flex: 1;
+    color: var(--main-color);
+}
+
+h2.nav-btn {
+    justify-content: right;
+    text-align: right;
+}
+
+.nav-sub {
+    gap: 2rem;
+    display: flex;
+    
+}
+
+.nav-btn a {
+    text-decoration: none;
+}
+
+h2.nav-btn a {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */    
+    
+    color: white;
+}
+
+h1.nav-btn a {
+    
+    color: var(--main-color);
+}
 
 h1 {
     font-size: 28px;

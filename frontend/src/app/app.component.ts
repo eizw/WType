@@ -1,21 +1,21 @@
 import { Component, OnInit, NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { CommonModule, NgStyle } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { WordComponent } from './word/word.component';
 import { BoardComponent } from './board/board.component';
 import { FooterComponent } from './footer/footer.component';
 import { BoardoptionsComponent } from './boardoptions/boardoptions.component';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { GameComponent } from './game/game.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
-  imports: [CommonModule, RouterOutlet,
-    WordComponent,
-    BoardComponent,
-    BoardoptionsComponent,
+  imports: [CommonModule, 
+    RouterOutlet, RouterLink, RouterLinkActive,
+    GameComponent,
     HeaderComponent,
     FooterComponent,
     HttpClientModule,
@@ -26,21 +26,9 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 export class AppComponent implements OnInit {
   private word_url: string = 'http://localhost:8000/words'
 
-  title = 'frontend';
-  gameTime: number = 15;
-  public words!: string[];
-
-  word_queue!: string[]
-
-  @ViewChild('gameBoard') gameBoard: any;
 
   constructor (private http: HttpClient) {}
 
   ngOnInit(): void {
-  }
-
-  selectTime(x: any) {
-    this.gameTime = x;
-
   }
 }
