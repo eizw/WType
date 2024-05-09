@@ -13,7 +13,7 @@ import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts'
   styleUrl: './result.component.css'
 })
 export class ResultComponent {
-  @Input() data: any;
+  @Input() runData: any;
 
   constructor() {}
 

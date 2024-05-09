@@ -1,6 +1,10 @@
 
-<div class="game-container">
+<div class="game-container" *ngIf="!runData">
     <app-boardoptions (selectedTime)="selectTime($event)"></app-boardoptions>
-    <app-board #gameBoard [gameTime]="gameTime"></app-board>
+    <app-board #gameBoard (runData)="setRunData($event)" [gameTime]="gameTime"></app-board>
     <button class="reset-btn" (click)="gameBoard.genWords()">↺</button>
+</div>
+<div class="game-container" *ngIf="runData">
+    <app-result [runData]="runData"></app-result>
+
 </div>

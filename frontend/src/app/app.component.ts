@@ -26,9 +26,15 @@ import { GameComponent } from './game/game.component';
 export class AppComponent implements OnInit {
   private word_url: string = 'http://localhost:8000/words'
 
+  
+  runData: any = null;
 
   constructor (private http: HttpClient) {}
 
   ngOnInit(): void {
+  }
+
+  setRunData(x: any) {
+    this.runData = x;
   }
 }

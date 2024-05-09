@@ -48,11 +48,13 @@ export class BoardComponent implements AfterViewInit {
   filtered_count!: number; // amount of correct words
   word_queue: string[] = [];
   run_summary: any;
-  @Output() evaluatedRun = new EventEmitter();
 
   //! board SCROLL
   scroll_threshold: number = 0;
   scroll_word: number = -1;
+
+  @Output() runData = new EventEmitter<any>();
+
 
   @ViewChildren(WordComponent) boardWords!: QueryList<ElementRef>;
   @ViewChild('playerText', {static: false}) playerText: any;
@@ -148,10 +150,11 @@ export class BoardComponent implements AfterViewInit {
         if (this.timeLeft > 0) {  
           this.timeLeft--;
         } else {
+          this.pauseTimer();
+          this.evalRun();
           this.IN_GAME = false;
           this.isPaused = true;
           this.timeLeft = this.gameTime;
-          this.evalRun();
         }
       }, 1000);
     }
@@ -168,11 +171,11 @@ export class BoardComponent implements AfterViewInit {
       .set('words', this.word_queue.join(' '))
       .set('time', this.gameTime);
 
-    await this.http.get<Object>(this.eval_url, { params: params }).subscribe({
+    await this.http.get<any>(this.eval_url, { params: params }).subscribe({
       next: data => {
         console.log(data)
         this.run_summary = data;
-        this.evaluatedRun.emit(this.run_summary);
+        this.runData.emit(this.run_summary);
       },
       error: err => {
         console.log(err)
