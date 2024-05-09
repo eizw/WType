@@ -39,6 +39,6 @@ export class GameComponent {
 
   setRunData(x: any) {
     this.runData = x;
-    
+    console.log(this.runData)
   }
 }

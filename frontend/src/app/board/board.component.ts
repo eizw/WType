@@ -44,9 +44,10 @@ export class BoardComponent implements AfterViewInit {
   player_text!: any;
 
   //! analysis
-  raw!: string; // raw text
+  raw: string = ''; // raw text
   filtered_count!: number; // amount of correct words
   word_queue: string[] = [];
+  used_words: string[] = [];
   run_summary: any;
 
   //! board SCROLL
@@ -112,7 +113,7 @@ export class BoardComponent implements AfterViewInit {
       let curr: string = x.target.value;
       if (x.keyCode == 32) {
         // SPACE
-        this.nextWord(x.target, curr);
+        this.nextWord(x);
       } else if (x.keyCode === 8) {
         // BACKSPACE
         this.cursor_pos = curr.length;
@@ -126,15 +127,17 @@ export class BoardComponent implements AfterViewInit {
     }
   }
 
-  nextWord(x: any, curr: string): void {
+  nextWord(x: any): void {
+    let curr = x.target.value
     if (curr == this.currWord.value) {
       this.filtered_count++;
     }
     this.currWord.changeCursor(-1);
     this.raw += curr + " ";
-    x.value = '';
+    x.target.value = '';
     this.cursor_pos = 0;
     this.curr_pos++;
+    this.used_words.push(this.currWord.value)
     this.currWord = this.boardWords.get(this.curr_pos);
     this.currWord.changeCursor(0);
 
@@ -168,8 +171,9 @@ export class BoardComponent implements AfterViewInit {
   async evalRun(): Promise<void> {
     let params = new HttpParams()
       .set('raw', this.raw)
-      .set('words', this.word_queue.join(' '))
+      .set('words', this.used_words.join(' '))
       .set('time', this.gameTime);
+    console.log(params)
 
     await this.http.get<any>(this.eval_url, { params: params }).subscribe({
       next: data => {
