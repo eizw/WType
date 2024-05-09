@@ -1,1 +1,22 @@
-<p>login works!</p>
+<div class="login">
+    <form #f="ngForm" (submit)="onSubmit(f)" novalidate>
+        <input
+            placeholder="Username"
+            type="text"
+            name="username"
+            ngModel
+            required
+        >
+        <input
+            placeholder="Password"
+            type="password"
+            name="password"
+            ngModel
+            required
+        >
+        <button on:click={signUp}>Sign Up</button>
+        <button on:click={login}>Login</button>
+
+    </form>
+
+</div>
