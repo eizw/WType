@@ -1,1 +1,35 @@
-<p>signup works!</p>
+<div class="register form">
+    <form #f="ngForm" (submit)="onSubmit(f)" novalidate>
+        <input
+            placeholder="Username"
+            type="text"
+            name="username"
+            ngModel
+            required
+        >
+        <input
+            placeholder="Email"
+            type="email"
+            name="email"
+            ngModel
+            required
+        >
+        <input
+            placeholder="Password"
+            type="password"
+            name="password"
+            ngModel
+            required
+        >
+        <input
+            placeholder="Confirm Password"
+            type="password"
+            name="re_password"
+            ngModel
+            required
+        >
+        <button (click)="onSubmit(f)">Signup</button>
+
+    </form>
+
+</div>

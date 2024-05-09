@@ -1,9 +1,9 @@
-<div class="login">
+<div class="login form">
     <form #f="ngForm" (submit)="onSubmit(f)" novalidate>
         <input
-            placeholder="Username"
-            type="text"
-            name="username"
+            placeholder="Email"
+            type="email"
+            name="email"
             ngModel
             required
         >
@@ -14,8 +14,7 @@
             ngModel
             required
         >
-        <button on:click={signUp}>Sign Up</button>
-        <button on:click={login}>Login</button>
+        <button (click)="onSubmit(f)">Login</button>
 
     </form>
 

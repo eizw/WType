@@ -12,12 +12,13 @@ import { FormsModule, NgForm } from '@angular/forms';
 })
 export class LoginComponent {
   private login_url = 'http://localhost:8000/auth/jwt/create'
-  private register_url = 'http://localhost:8000/auth/users'
 
   constructor(private http: HttpClient) {}
 
   async onSubmit(f: NgForm) {
-    await this.http.get<any>(this.login_url, { params: f.value }).subscribe({
+    let params = f.value
+    console.log(params)
+    await this.http.post<any>(this.login_url, { email: params.email, password: params.password }).subscribe({
       next: data => {
         localStorage.setItem('access_token', JSON.stringify(data.access_token));
       },
