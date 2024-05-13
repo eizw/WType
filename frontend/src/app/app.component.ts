@@ -9,6 +9,8 @@ import { BoardoptionsComponent } from './boardoptions/boardoptions.component';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { GameComponent } from './game/game.component';
 import { JwtInterceptor } from './interceptor';
+import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +19,8 @@ import { JwtInterceptor } from './interceptor';
   imports: [CommonModule, 
     RouterOutlet, RouterLink, RouterLinkActive,
     GameComponent,
+    LoginComponent,
+    SignupComponent,
     HeaderComponent,
     FooterComponent,
     HttpClientModule,

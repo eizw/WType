@@ -1,0 +1,42 @@
+
+app-signup {
+    height: 100%;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    gap: 15px;
+}
+
+.form-input {
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    font-size: 20px;
+}
+
+.form-input label {
+    color: white;
+}
+
+.form-input input {
+    padding-left: 20px;
+    height: 2rem;
+    border-radius: 5px;
+    /* -moz-box-sizing: border-box;
+    box-sizing: border-box; */
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.form button {
+    border-radius: 10px;
+    width: 70px;
+    height: 45px;
+}

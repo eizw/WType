@@ -26,3 +26,9 @@ app-root {
     width: 100%;
     justify-content: center;
 }
+
+.main-font {
+    font-family: "Source Code Pro", monospace;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
