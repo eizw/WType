@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from django.contrib.auth import authenticate, login, logout
 from os import path
 import json
+import math
 from random import sample
 
 basepath = path.dirname(__file__)
@@ -37,23 +38,21 @@ def getWord(request):
 @permission_classes([])
 def evalRun(request):
     raw = request.GET['raw']
-    words = request.GET['words']
+    words = request.GET['words'].split()
     time = int(request.GET['time'])
     
 
     fcount = 0
-    raw_words = raw.split(' ')
-    print(words)
-    print(raw_words)
-    comp = [0] * len(raw_words)# 0 = false, 1 = true
+    raw_words = raw.split()
+    comp = [0] * len(raw_words) # 0 = false, 1 = true
     for i, word in enumerate(raw_words):
         if (word == words[i]):
             fcount += 1
             comp[i] = 1
     
     
-    raw_wpm = len(raw_words) / time
-    filtered_wpm = fcount / time
+    raw_wpm = math.ceil(len(raw_words) / time)
+    filtered_wpm = math.ceil(fcount / time)
 
     res = {
         'raw': raw_wpm,
