@@ -37,11 +37,14 @@ def getWord(request):
 @permission_classes([])
 def evalRun(request):
     raw = request.GET['raw']
-    words = request.GET['words'].split(' ')
+    words = request.GET['words']
     time = int(request.GET['time'])
+    
 
     fcount = 0
     raw_words = raw.split(' ')
+    print(words)
+    print(raw_words)
     comp = [0] * len(raw_words)# 0 = false, 1 = true
     for i, word in enumerate(raw_words):
         if (word == words[i]):

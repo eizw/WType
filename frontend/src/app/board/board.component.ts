@@ -1,4 +1,4 @@
-import { Component, Input, ViewChildren, QueryList, ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, Input, ViewChildren, QueryList, ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges, Output, EventEmitter, ElementRef, ComponentFactoryResolver } from '@angular/core';
 import { WordComponent } from '../word/word.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule, getLocaleDayPeriods } from '@angular/common';
@@ -80,10 +80,8 @@ export class BoardComponent implements AfterViewInit {
   boardRendered() {
     if (!this.isFetching) {
       this.currWord = this.boardWords.get(this.curr_pos);
-      console.log(this.currWord)
 
       this.scroll_threshold = this.currWord.getYPos()
-      console.log('letter added cuh');
       this.newRun();
     }
   }
@@ -113,7 +111,10 @@ export class BoardComponent implements AfterViewInit {
       let curr: string = x.target.value;
       if (x.keyCode == 32) {
         // SPACE
-        this.nextWord(x);
+        if (curr.length==1)
+          x.target.value = '';
+        else
+          this.nextWord(x);
       } else if (x.keyCode === 8) {
         // BACKSPACE
         this.cursor_pos = curr.length;
@@ -128,7 +129,7 @@ export class BoardComponent implements AfterViewInit {
   }
 
   nextWord(x: any): void {
-    let curr = x.target.value
+    let curr = x.target.value;
     if (curr == this.currWord.value) {
       this.filtered_count++;
     }
@@ -137,7 +138,7 @@ export class BoardComponent implements AfterViewInit {
     x.target.value = '';
     this.cursor_pos = 0;
     this.curr_pos++;
-    this.used_words.push(this.currWord.value)
+    this.used_words.push(this.currWord.word)
     this.currWord = this.boardWords.get(this.curr_pos);
     this.currWord.changeCursor(0);
 

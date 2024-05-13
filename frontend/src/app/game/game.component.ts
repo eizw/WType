@@ -20,7 +20,7 @@ import { ResultComponent } from '../result/result.component';
   styleUrl: './game.component.css'
 })
 export class GameComponent {
-
+  runFinished: boolean = false;
   title = 'frontend';
   gameTime: number = 15;
   public words!: string[];
@@ -39,6 +39,8 @@ export class GameComponent {
 
   setRunData(x: any) {
     this.runData = x;
+    if (this.runData) this.runFinished = true;
+    else this.runFinished = false;
     console.log(this.runData)
   }
 }

@@ -4,7 +4,6 @@
     <app-board #gameBoard (runData)="setRunData($event)" [gameTime]="gameTime"></app-board>
     <button class="reset-btn" (click)="gameBoard.genWords()">↺</button>
 </div>
-<div class="game-container" *ngIf="runData">
+<div class="game-container" *ngIf="runFinished">
     <app-result [runData]="runData"></app-result>
-
 </div>
