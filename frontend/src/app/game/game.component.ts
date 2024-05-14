@@ -25,8 +25,8 @@ export class GameComponent {
   gameTime: number = 15;
   public words!: string[];
   runData: any = {
-    "raw": 1,
-    "filtered": 1,
+    "raw": 60,
+    "filtered": 60,
     "comp": [
         0,
         2,
@@ -41,7 +41,7 @@ export class GameComponent {
         0,
         0
     ]
-};
+}
 
   word_queue!: string[]
 
