@@ -20,7 +20,7 @@ import { Component, Input, QueryList } from '@angular/core';
   styleUrl: './word.component.css'
 })
 export class WordComponent implements OnChanges {
-  @Input() word!: string;
+  @Input() word!: string; 
   extra!: string;
 
   @Output() letters!: string[];

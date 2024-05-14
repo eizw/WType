@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from os import path
 import json
 import math
+from Levenshtein import distance
 from random import sample
 
 basepath = path.dirname(__file__)
@@ -41,18 +42,23 @@ def evalRun(request):
     words = request.GET['words'].split()
     time = int(request.GET['time'])
     
+    print(raw)
+    print(words)
 
     fcount = 0
     raw_words = raw.split()
-    comp = [0] * len(raw_words) # 0 = false, 1 = true
+    n = len(raw_words)
+    comp = [0 for i in range(n)] # 0 = false, 1 = true
     for i, word in enumerate(raw_words):
-        if (word == words[i]):
+        print(word, words[i])
+        curr = distance(word, words[i])
+        if (curr > 0):
             fcount += 1
-            comp[i] = 1
+            comp[i] = curr
     
     
-    raw_wpm = math.ceil(len(raw_words) / time)
-    filtered_wpm = math.ceil(fcount / time)
+    raw_wpm = math.ceil(n / time)
+    filtered_wpm = math.ceil((n - fcount) / time)
 
     res = {
         'raw': raw_wpm,

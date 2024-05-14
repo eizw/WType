@@ -79,18 +79,22 @@ export class BoardComponent implements AfterViewInit {
 
   boardRendered() {
     if (!this.isFetching) {
-      this.currWord = this.boardWords.get(this.curr_pos);
 
+      this.currWord = this.boardWords.get(this.curr_pos);
       this.scroll_threshold = this.currWord.getYPos()
       this.newRun();
     }
   }
 
   newRun(): void {
+    this.timeLeft = this.gameTime;
+    this.curr_pos = 0;
     this.cursor_pos = 0;
-    this.currWord = this.boardWords.get(this.curr_pos);
+    this.used_words = [this.currWord.word]
+    this.scroll_threshold = this.currWord.getYPos()
     this.currWord.changeCursor(0);
     this.playerText.nativeElement.focus()
+    this.IN_GAME = true;
   }
 
   startGame(): void {
@@ -111,7 +115,7 @@ export class BoardComponent implements AfterViewInit {
       let curr: string = x.target.value;
       if (x.keyCode == 32) {
         // SPACE
-        if (curr.length==1)
+        if (!curr.replace(/\s/g, '').length)
           x.target.value = '';
         else
           this.nextWord(x);
@@ -138,9 +142,10 @@ export class BoardComponent implements AfterViewInit {
     x.target.value = '';
     this.cursor_pos = 0;
     this.curr_pos++;
-    this.used_words.push(this.currWord.word)
     this.currWord = this.boardWords.get(this.curr_pos);
+    this.used_words.push(this.currWord.word)
     this.currWord.changeCursor(0);
+    console.log(this.raw);
 
     if (this.currWord.getYPos() > 0) {
       this.scroll_word = this.curr_pos;
@@ -189,12 +194,17 @@ export class BoardComponent implements AfterViewInit {
   }
 
   async genWords(): Promise<void> {
+    // reset game params
     this.IN_GAME = false;
     this.isPaused = true;
+    this.isFetching = true;
+
+
     await this.http.get<string[]>(this.word_url).subscribe({
       next: data => {
         this.word_queue = data
         this.isFetching = false;
+        this.newRun()
       },
       error: err => {
         console.log(err);

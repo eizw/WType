@@ -1,0 +1,13 @@
+.thread {
+    flex: 1;
+}
+
+.ribbon-container { 
+    display: flex;
+    flex-direction: row;
+}
+
+.res-container {
+    display: grid;
+    grid-template-columns: 30% auto;
+}
