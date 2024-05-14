@@ -8,11 +8,12 @@
             (keyup)="onKeyUp($event)"
             (focusout)="pauseTimer()"
             (click)="startGame()"
+            [disabled]="pDisabled"
         >
         <!-- <div class="player-cursor">
             |
         </div> -->
-        <div class="word-wrapper">
+        <div class="word-wrapper" *ngIf="!isFetching">
             <app-word
             *ngFor="let val of word_queue; index as i"
             [word]="val"

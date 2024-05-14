@@ -9,35 +9,35 @@ import { Component, Input, QueryList } from '@angular/core';
   template: `
     <span 
       #letter
-      *ngFor="let letter of word?.split(''); index as i"
-      [ngClass]="{'letter': true, 'letter-right': hl[i]==1, 'letter-wrong': hl[i]==2, 'cursor': i == cursor}"
-    >{{letter}}</span><span
-      #letter
-      *ngFor="let letter of extra?.split(''); index as i"
-      [ngClass]="{'letter': true, 'letter-extra': true, 'cursor': cursor == (i + word.length + 1)}"
-    >{{letter}}</span>
-  `,
+      *ngFor="let letter of word.split(''); index as i; trackBy: identify"
+      class="letter"
+      [ngClass]="{'letter-right': letter == (pword.charAt(i) || ''), 'letter-wrong': letter != (pword.charAt(i) || letter), 'cursor': i == cursor}"
+    >{{word.charAt(i)}}</span>`,
+    // <span
+    //   #letter
+    //   *ngFor="let letter of extra?.split(''); index as i; trackBy: identify"
+    //   [ngClass]="{'letter': true, 'letter-extra': true, 'cursor': cursor == (i + word.length + 1)}"
+    // >{{letter}}</span>
   styleUrl: './word.component.css'
 })
 export class WordComponent implements OnChanges {
-  @Input() word!: string; 
+  @Input() word!: string;; 
+  @Input() pword!: string;
+  @Input() cursor: number = -1;
   extra!: string;
 
   @Output() letters!: string[];
   @ViewChildren('letter') letterSpan!: QueryList<any>
 
-  cursor: number = -1; // -1 = cursor is not on this word
   hl: number[] = []; // 0 : none, 1 : correct, : 2 : incorrect
 
   constructor(private cd: ChangeDetectorRef, private elRef: ElementRef) {}
 
   ngOnChanges(changes: any) {
-    this.hl = Array(changes.word.currentValue.length).fill(0);
+    // this.hl = Array(changes.word.currentValue.length).fill(0);
+    // this.pword = [...Array(changes.word.currentValue.length)].map((u) => '')
+    this.pword = ''
     this.cd.detectChanges();
-  }
-
-  changeCursor(d: number) : void {
-    this.cursor = d;
   }
 
   checkLetters(pword: string): void {
@@ -65,11 +65,14 @@ export class WordComponent implements OnChanges {
         this.extra = this.extra.slice(0, i - this.word.length);
       }
     }
-    this.changeCursor(d);
   }
 
   getYPos(ref: ElementRef) {
     console.log(this.elRef.nativeElement.offsetTop)
     return this.elRef.nativeElement.offsetTop
+  }
+
+  identify(index: any, item: any) {
+    return item;
   }
 }

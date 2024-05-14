@@ -1,4 +1,4 @@
-import { Component, Input, ViewChildren, QueryList, ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges, Output, EventEmitter, ElementRef, ComponentFactoryResolver } from '@angular/core';
+import { Component, Input, ViewChildren, QueryList, ViewChild, AfterViewInit, ChangeDetectorRef, SimpleChanges, Output, EventEmitter, ElementRef, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { WordComponent } from '../word/word.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule, getLocaleDayPeriods } from '@angular/common';
@@ -14,7 +14,7 @@ import { HttpClient, HttpClientModule, HttpParams } from '@angular/common/http';
   ],templateUrl: `./board.component.html`,
   styleUrl: './board.component.css'
 })
-export class BoardComponent implements AfterViewInit {
+export class BoardComponent implements AfterViewInit, OnInit {
   private word_url: string = 'http://localhost:8000/words'
   private eval_url: string = 'http://localhost:8000/run/eval?'
 
@@ -42,6 +42,7 @@ export class BoardComponent implements AfterViewInit {
 
   timer!: any;
   player_text!: any;
+  pDisabled: boolean = false; // * LAG control
 
   //! analysis
   raw: string = ''; // raw text
@@ -62,13 +63,17 @@ export class BoardComponent implements AfterViewInit {
 
   constructor(private cd: ChangeDetectorRef, private http: HttpClient) {}
 
+  async ngOnInit(): Promise<void> {
+    await this.genWords();
+  }
 
   async ngAfterViewInit() {
-    await this.genWords();
-    this.boardWords.changes.subscribe(res => {
-      this.boardRendered();
+    setTimeout(_ => {
+      this.boardWords.changes.subscribe(res => {
+        this.boardRendered();
+      })
+
     })
-    this.cd.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -78,23 +83,29 @@ export class BoardComponent implements AfterViewInit {
 
 
   boardRendered() {
-    if (!this.isFetching) {
-
-      this.currWord = this.boardWords.get(this.curr_pos);
-      this.scroll_threshold = this.currWord.getYPos()
+    if (!this.IN_GAME) {
       this.newRun();
+
     }
   }
 
   newRun(): void {
-    this.timeLeft = this.gameTime;
+    this.cd.detectChanges();
     this.curr_pos = 0;
     this.cursor_pos = 0;
+    this.timeLeft = this.gameTime;
+    this.scroll_word = 0;
+
+    this.currWord = this.boardWords.get(this.curr_pos);
+    this.currWord.cursor = 0;
+    console.log(this.currWord)
     this.used_words = [this.currWord.word]
-    this.scroll_threshold = this.currWord.getYPos()
-    this.currWord.changeCursor(0);
+    this.raw = ''
+
     this.playerText.nativeElement.focus()
     this.IN_GAME = true;
+
+    this.scroll_threshold = this.currWord.getYPos()
   }
 
   startGame(): void {
@@ -115,20 +126,20 @@ export class BoardComponent implements AfterViewInit {
       let curr: string = x.target.value;
       if (x.keyCode == 32) {
         // SPACE
-        if (!curr.replace(/\s/g, '').length)
-          x.target.value = '';
-        else
-          this.nextWord(x);
+        // this.pDisabled = true;
+        this.nextWord(x)
       } else if (x.keyCode === 8) {
         // BACKSPACE
         this.cursor_pos = curr.length;
-        this.currWord.backspace(this.cursor_pos)
+        this.currWord.pword = curr;
+        this.currWord.cursor = this.cursor_pos
       } else if (curr) {
         this.cursor_pos++;
-        this.currWord.checkLetters(curr);
-        this.currWord.changeCursor(this.cursor_pos)
+        // this.currWord.checkLetters(curr);
+        this.currWord.pword = curr;
+        this.currWord.cursor = this.cursor_pos
       }
-      this.cd.markForCheck();
+      // this.cd.markForCheck();
     }
   }
 
@@ -137,19 +148,22 @@ export class BoardComponent implements AfterViewInit {
     if (curr == this.currWord.value) {
       this.filtered_count++;
     }
-    this.currWord.changeCursor(-1);
-    this.raw += curr + " ";
+    this.currWord.cursor = -1;
+    this.curr_pos++;
+    this.raw += this.currWord.pword + " ";
+    this.currWord = this.boardWords.get(this.curr_pos);
+    this.currWord.cursor = 0;
+    this.used_words.push(this.currWord.word)
+
+
     x.target.value = '';
     this.cursor_pos = 0;
-    this.curr_pos++;
-    this.currWord = this.boardWords.get(this.curr_pos);
-    this.used_words.push(this.currWord.word)
-    this.currWord.changeCursor(0);
     console.log(this.raw);
 
     if (this.currWord.getYPos() > 0) {
       this.scroll_word = this.curr_pos;
     }
+    // this.pDisabled = false;
   }
 
   startTimer(): void {
@@ -181,7 +195,7 @@ export class BoardComponent implements AfterViewInit {
       .set('time', this.gameTime);
     console.log(params)
 
-    await this.http.get<any>(this.eval_url, { params: params }).subscribe({
+    this.http.get<any>(this.eval_url, { params: params }).subscribe({
       next: data => {
         console.log(data)
         this.run_summary = data;
@@ -198,9 +212,10 @@ export class BoardComponent implements AfterViewInit {
     this.IN_GAME = false;
     this.isPaused = true;
     this.isFetching = true;
+    this.word_queue = [];
 
 
-    await this.http.get<string[]>(this.word_url).subscribe({
+    this.http.get<string[]>(this.word_url).subscribe({
       next: data => {
         this.word_queue = data
         this.isFetching = false;
