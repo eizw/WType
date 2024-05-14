@@ -16,6 +16,11 @@
                 [ngClass]="{'thread': true, 'thread-right': c == 0, 'thread-wrong': c > 0}"
             ></div>
         </div>
-
+        <div class="axis-container">
+            <span
+                class="main-font"
+                *ngFor="let x of axis"
+            >{{x}}</span>
+        </div>
     </div>
 </div>
