@@ -22,3 +22,7 @@ app-board {
     font-style: normal;
     width: 100%;
 }
+
+app-result {
+    width: 100%;
+}

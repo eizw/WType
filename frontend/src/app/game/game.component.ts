@@ -20,11 +20,28 @@ import { ResultComponent } from '../result/result.component';
   styleUrl: './game.component.css'
 })
 export class GameComponent {
-  runFinished: boolean = false;
+  runFinished: boolean = true;
   title = 'frontend';
   gameTime: number = 15;
   public words!: string[];
-  runData: any = null
+  runData: any = {
+    "raw": 1,
+    "filtered": 1,
+    "comp": [
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+    ]
+};
 
   word_queue!: string[]
 

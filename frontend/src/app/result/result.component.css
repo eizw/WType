@@ -2,12 +2,43 @@
     flex: 1;
 }
 
+.thread-right {
+    background-color: rgb(141, 141, 141);
+}
+
+.thread-wrong {
+    background-color: var(--main-color)
+}
+
+.wpm-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.wpm-container span { 
+    color: white;
+}
+
+.filtered-wpm {
+    text-decoration: underline;
+    font-size: 56px;
+    flex-basis: 2;
+}
+
+.raw-wpm {
+    flex-basis: 1;
+}
+
 .ribbon-container { 
+    gap: 5px;
     display: flex;
     flex-direction: row;
+    width: 100%;
+    height: 100%;
 }
 
 .res-container {
     display: grid;
     grid-template-columns: 30% auto;
+    width: 50vw;
 }
