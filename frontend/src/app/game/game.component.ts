@@ -43,4 +43,9 @@ export class GameComponent {
     else this.runFinished = false;
     console.log(this.runData)
   }
+
+  genWords() {
+    this.runFinished = false;
+    this.gameBoard.genWords();
+  }
 }

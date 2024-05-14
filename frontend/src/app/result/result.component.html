@@ -11,7 +11,7 @@
             <div
                 *ngFor="let c of runData.comp"
                 [ngStyle]="{
-                    'opacity': (c > 0) ? 1 - ((c-1) * 0.2) : 1,
+                    'opacity': (c > 0) ? 1 - ((c-1) * 0.1) : 1,
                 }"
                 [ngClass]="{'thread': true, 'thread-right': c == 0, 'thread-wrong': c > 0}"
             ></div>

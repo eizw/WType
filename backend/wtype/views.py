@@ -57,8 +57,8 @@ def evalRun(request):
             comp[i] = curr
     
     
-    raw_wpm = math.ceil(n / time) * 60
-    filtered_wpm = math.ceil((n - fcount) / time) * 60
+    raw_wpm = math.ceil(n * 60 / time)
+    filtered_wpm = math.ceil((n - fcount) * 60 / time)
 
     res = {
         'raw': raw_wpm,

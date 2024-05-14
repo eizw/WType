@@ -3,6 +3,7 @@ import { WordComponent } from '../word/word.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule, getLocaleDayPeriods } from '@angular/common';
 import { HttpClient, HttpClientModule, HttpParams } from '@angular/common/http';
+import { consumerPollProducersForChange } from '@angular/core/primitives/signals';
 @Component({
   selector: 'app-board',
   standalone: true,
@@ -60,11 +61,12 @@ export class BoardComponent implements AfterViewInit, OnInit {
 
   @ViewChildren(WordComponent) boardWords!: QueryList<ElementRef>;
   @ViewChild('playerText', {static: false}) playerText: any;
+  focusOp: number = 1;
 
   constructor(private cd: ChangeDetectorRef, private http: HttpClient) {}
 
   async ngOnInit(): Promise<void> {
-    await this.genWords();
+    this.genWords();
   }
 
   async ngAfterViewInit() {
@@ -83,9 +85,8 @@ export class BoardComponent implements AfterViewInit, OnInit {
 
 
   boardRendered() {
-    if (!this.IN_GAME) {
+    if (!this.isFetching) {
       this.newRun();
-
     }
   }
 
@@ -98,31 +99,24 @@ export class BoardComponent implements AfterViewInit, OnInit {
 
     this.currWord = this.boardWords.get(this.curr_pos);
     this.currWord.cursor = 0;
-    console.log(this.currWord)
     this.used_words = [this.currWord.word]
     this.raw = ''
 
     this.playerText.nativeElement.focus()
-    this.IN_GAME = true;
+    this.pauseTimer();
+    this.isPaused = true;
+    this.IN_GAME = false;
+    this.GAME_STARTED = false;
 
     this.scroll_threshold = this.currWord.getYPos()
   }
 
-  startGame(): void {
-    if (this.IN_GAME) {
-      if (this.isPaused)
-        this.startTimer();
-    } else {
-      this.currWord.changeCursor(0);
-      this.isPaused = true;
-      this.IN_GAME = true;
-    }
-  }
-
   onKeyUp(x: any): void {
-    if (this.IN_GAME) {
-      if (this.isPaused)
+    if (x.keyCode != 13) {
+      if (!this.GAME_STARTED) {
+        this.GAME_STARTED = true;
         this.startTimer();
+      }
       let curr: string = x.target.value;
       if (x.keyCode == 32) {
         // SPACE
@@ -140,8 +134,12 @@ export class BoardComponent implements AfterViewInit, OnInit {
         this.currWord.cursor = this.cursor_pos
       }
       // this.cd.markForCheck();
+
+    } else {
+      x.preventDefault();
     }
-  }
+
+  } 
 
   nextWord(x: any): void {
     let curr = x.target.value;
@@ -167,17 +165,18 @@ export class BoardComponent implements AfterViewInit, OnInit {
   }
 
   startTimer(): void {
-    if (this.isPaused && this.IN_GAME) {
+    if (!this.isFetching) 
+    if (this.isPaused && this.GAME_STARTED) {
       this.isPaused = false;
       this.interval = setInterval(() => {
         if (this.timeLeft > 0) {  
           this.timeLeft--;
         } else {
-          this.pauseTimer();
-          this.evalRun();
           this.IN_GAME = false;
           this.isPaused = true;
           this.timeLeft = this.gameTime;
+          this.pauseTimer();
+          this.evalRun();
         }
       }, 1000);
     }
@@ -208,10 +207,10 @@ export class BoardComponent implements AfterViewInit, OnInit {
   }
 
   async genWords(): Promise<void> {
-    // reset game params
-    this.IN_GAME = false;
-    this.isPaused = true;
     this.isFetching = true;
+
+    // reset game params
+    this.pauseTimer();
     this.word_queue = [];
 
 
@@ -219,7 +218,7 @@ export class BoardComponent implements AfterViewInit, OnInit {
       next: data => {
         this.word_queue = data
         this.isFetching = false;
-        this.newRun()
+        this.cd.detectChanges()
       },
       error: err => {
         console.log(err);
