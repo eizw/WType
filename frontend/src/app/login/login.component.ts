@@ -11,16 +11,15 @@ import { FormsModule, NgForm } from '@angular/forms';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  private login_url = 'http://localhost:8000/auth/jwt/create'
+  private login_url = 'http://localhost:8000/auth/jwt/create/'
 
   constructor(private http: HttpClient) {}
 
-  async onSubmit(f: NgForm) {
+  onSubmit(f: NgForm) {
     let params = f.value
-    console.log(params)
-    await this.http.post<any>(this.login_url, { email: params.email, password: params.password }).subscribe({
+    this.http.post<any>(this.login_url, { username: params.username, password: params.password }).subscribe({
       next: data => {
-        localStorage.setItem('access_token', JSON.stringify(data.access_token));
+        localStorage.setItem('access_token', JSON.stringify(data.access));
       },
       error: err => {
         console.log(err)

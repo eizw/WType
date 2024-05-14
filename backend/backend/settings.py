@@ -43,13 +43,13 @@ ALLOWED_HOSTS = getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
+    'rest_framework',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djoser',
-    'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'wtype',
 ]
@@ -170,11 +170,17 @@ SIMPLE_JWT = {
 
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'activation/{uid}/{token}',
     'USER_CREATE_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'TOKEN_MODEL': None,
+    'SERIALIZERS': {
+        'user_create':'wtype.serializers.CustomUserCreateSerializer',
+        'user':'wtype.serializers.CustomUserCreateSerializer',
+        'user_delete': 'djoser.serializers.UserDeleteSerializer',
+        'user_create_password_retype': 'wtype.serializers.CustomUserCreateSerializer',
+        'password_reset': 'wtype.serializers.PasswordResetEmailSentSerializer',
+    },
 }
 
 # Default primary key field type
