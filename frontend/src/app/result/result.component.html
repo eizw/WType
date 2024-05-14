@@ -1,8 +1,9 @@
 <div class="res-container">
     <!-- <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height:'360px'}"></canvasjs-chart> -->
     <div class="wpm-container">
-        <span class="main-font">wpm</span>
+        <span class="main-font" style="font-size: 24px;">wpm</span>
         <span class="filtered-wpm main-font">{{ runData.filtered }}</span><br>
+        <span class="main-font">raw</span>
         <span class="raw-wpm main-font">{{ runData.raw }}</span>
     </div>
     <div class="graph-container">
@@ -10,7 +11,7 @@
             <div
                 *ngFor="let c of runData.comp"
                 [ngStyle]="{
-                    'opacity': (c > 0) ? 1 - (c * 0.1) : 1,
+                    'opacity': (c > 0) ? 1 - ((c-1) * 0.2) : 1,
                 }"
                 [ngClass]="{'thread': true, 'thread-right': c == 0, 'thread-wrong': c > 0}"
             ></div>

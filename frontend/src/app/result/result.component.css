@@ -1,13 +1,15 @@
+
+
 .thread {
     flex: 1;
 }
 
 .thread-right {
-    background-color: rgb(141, 141, 141);
+    background-color: rgb(200, 0, 240);
 }
 
 .thread-wrong {
-    background-color: var(--main-color)
+    background-color: rgb(255, 255, 255);
 }
 
 .wpm-container {
@@ -16,21 +18,29 @@
 }
 
 .wpm-container span { 
+    margin: 0;
+    padding: 0;
     color: white;
 }
 
 .filtered-wpm {
     text-decoration: underline;
-    font-size: 56px;
-    flex-basis: 2;
+    left: 0;
+    line-height: 60px;
+    --f: 64px;
+    font-size: var(--f);
+    flex-basis: 3;
 }
 
 .raw-wpm {
+    --f: 64px;
+    line-height: calc((var(--f) / 3) - 2);
+    font-size: calc(var(--f) / 3);
     flex-basis: 1;
 }
 
 .ribbon-container { 
-    gap: 5px;
+    gap: 0;
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -38,7 +48,8 @@
 }
 
 .res-container {
+    height: 100%;
     display: grid;
-    grid-template-columns: 30% auto;
+    grid-template-columns: 25% auto;
     width: 50vw;
 }
