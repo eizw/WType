@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { setThrowInvalidWriteToSignalError } from '@angular/core/primitives/signals';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-header',
@@ -10,4 +12,19 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
+  username!: any;
+  
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    console.log(this.username)
+    this.authService.loginStatusChange().subscribe(isLoggedIn => {
+      console.log('logged in')
+      if (isLoggedIn) {
+        this.username = localStorage.getItem('currentUser')
+      } else {
+        this.username = null;
+      }
+    })
+  }
 }

@@ -5,7 +5,7 @@
         </a>
     </h1>
 
-    <div class="nav-sub">
+    <div class="nav-sub" *ngIf="!username">
         <h2 class="nav-btn">
             <a routerLink="/login" routerLinkActive="active" ariaCurrentWhenActive="page">
                 Login
@@ -14,6 +14,14 @@
         <h2 class="nav-btn">
             <a routerLink="/signup" routerLinkActive="active" ariaCurrentWhenActive="page">
                 Signup
+            </a>
+        </h2>
+
+    </div>
+    <div class="nav-sub" *ngIf="username">
+        <h2 class="nav-btn">
+            <a routerLink="/user/" routerLinkActive="active" ariaCurrentWhenActive="page">
+                {{ username }}
             </a>
         </h2>
 

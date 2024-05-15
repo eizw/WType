@@ -38,7 +38,6 @@ import { SignupComponent } from './signup/signup.component';
 export class AppComponent implements OnInit {
   private word_url: string = 'http://localhost:8000/words'
 
-  
   runData: any = null;
 
   constructor (private http: HttpClient) {}
