@@ -102,19 +102,26 @@ DATABASES = {
 }
 
 # Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS=True
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_HOST_USER=getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD=getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT=587
 
-EMAIL_BACKEND = 'django_ses.SESBackend'
-DEFAULT_FROM_EMIAL = getenv('AWS_SES_FROM_EMAIL')
+# EMAIL_BACKEND = 'django_ses.SESBackend'
+# DEFAULT_FROM_EMIAL = getenv('AWS_SES_FROM_EMAIL')
 
-AWS_SES_ACCESS_KEY_ID = getenv('AWS_SES_ACCESS_KEY_ID')
-AWS_SES_SECRET_ACCESS_KEY = getenv('AWS_SES_SECRET_ACCESS_KEY')
+# AWS_SES_ACCESS_KEY_ID = getenv('AWS_SES_ACCESS_KEY_ID')
+# AWS_SES_SECRET_ACCESS_KEY = getenv('AWS_SES_SECRET_ACCESS_KEY')
 
-AWS_SES_REGION_NAME = getenv('AWS_SES_REGION_NAME')
-AWS_SES_REGION_ENDPOINT = f'email.{AWS_SES_REGION_NAME}.amazonaws.com'
+# AWS_SES_REGION_NAME = getenv('AWS_SES_REGION_NAME')
+# AWS_SES_REGION_ENDPOINT = f'email.{AWS_SES_REGION_NAME}.amazonaws.com'
 
-AWS_SES_FROM_EMAIL = getenv('AWS_SES_FROM_EMAIL')
+# AWS_SES_FROM_EMAIL = getenv('AWS_SES_FROM_EMAIL')
 
-USE_SES_V2 = True
+# USE_SES_V2 = True
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -168,9 +175,11 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=3)
 }
 
+DOMAIN = ('localhost:3000')
+SITE_NAME = ('WType')
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/{uid}/{token}',
-    'ACTIVATION_URL': 'activation/{uid}/{token}',
+    'ACTIVATION_URL': '#/activation/{uid}/{token}',
     'USER_CREATE_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'TOKEN_MODEL': None,
@@ -181,7 +190,10 @@ DJOSER = {
         'user_create_password_retype': 'wtype.serializers.CustomUserCreateSerializer',
         'password_reset': 'wtype.serializers.PasswordResetEmailSentSerializer',
     },
+    'SEND_ACTIVATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': True,
 }
+PASSWORD_RESET_TIMEOUT = 180
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

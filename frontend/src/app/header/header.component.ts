@@ -17,7 +17,6 @@ export class HeaderComponent {
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    console.log(this.username)
     this.authService.loginStatusChange().subscribe(isLoggedIn => {
       console.log('logged in')
       if (isLoggedIn) {

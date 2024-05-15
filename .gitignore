@@ -7,3 +7,4 @@ share
 bin
 
 pyvenv.cfg
+backend/.env.local

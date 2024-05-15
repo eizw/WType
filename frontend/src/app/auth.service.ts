@@ -9,6 +9,7 @@ import { Observable, ReplaySubject, Subject, tap } from 'rxjs';
 export class AuthService {
   private login_url = 'http://localhost:8000/auth/jwt/create/'
   private register_url = 'http://localhost:8000/auth/users/'
+  private activation_url = 'http://localhost:8000/auth/users/activation/'
 
 
   private isLoggedIn: Subject<boolean> = new ReplaySubject<boolean>();
@@ -28,7 +29,7 @@ export class AuthService {
         this.router.navigate(['/'])
       },
       error: err => {
-        console.log(err)
+        console.log(err.error)
       }
     })
   }
@@ -39,6 +40,20 @@ export class AuthService {
       email: params.email, 
       password: params.password,
       re_password: params.re_password }).subscribe({
+      next: data => {
+        this.router.navigate(['/login'])
+      },
+      error: err => {
+        console.log(err.error)
+      }
+    })
+  }
+
+  activate(params: any) {
+    this.http.post<any>(this.activation_url, {
+      uid: params.uid,
+      token: params.token
+    }).subscribe({
       next: data => {
         this.router.navigate(['/login'])
       },

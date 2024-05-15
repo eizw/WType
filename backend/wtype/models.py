@@ -6,7 +6,9 @@ from django.contrib.auth.models import (
 
 
 class UserAccountManager(BaseUserManager):
-    def create_user(self, username, password=None, **kwargs):
+    def create_user(self, username, email, password=None, **kwargs):
+        if not username:
+            raise ValueError("Users must have a username")
         if not email:
             raise ValueError("Users must have an email address")
 
@@ -14,7 +16,8 @@ class UserAccountManager(BaseUserManager):
         email.lower()
 
         user = self.model(
-            email=username,
+            username=username,
+            email=email,
             **kwargs,
         )
 
@@ -53,7 +56,7 @@ class UserAccount(AbstractBaseUser):
     REQUIRED_FIELDS = ['email']
 
     def __str__(self):
-        return self.email
+        return self.username
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"

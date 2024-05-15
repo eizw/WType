@@ -32,3 +32,10 @@ app-root {
     font-optical-sizing: auto;
     font-style: normal;
 }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
