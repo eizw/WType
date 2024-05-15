@@ -10,7 +10,7 @@ import { Component, Output, EventEmitter, ViewChildren, OnInit  } from '@angular
   styleUrl: './boardoptions.component.css'
 })
 export class BoardoptionsComponent implements OnInit {
-  times = [5, 30, 60, 120]
+  times = [15, 30, 60, 120]
   currTime = 15;
   @Output() selectedTime = new EventEmitter<number>();
 

@@ -1,6 +1,7 @@
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -12,7 +13,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 export class SignupComponent {
   private register_url = 'http://localhost:8000/auth/users/'
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   async onSubmit(f: NgForm) {
     let params = f.value
@@ -23,7 +24,7 @@ export class SignupComponent {
       password: params.password,
       re_password: params.re_password }).subscribe({
       next: data => {
-        console.log(data)
+        this.router.navigate(['/login'])
       },
       error: err => {
         console.log(err.error)
